@@ -21,11 +21,6 @@ public class BbsRestController {
     //게시물 작성
     @PostMapping("/")
     public ResponseEntity<Void> savePost(@RequestBody BbsVO bbsVO){
-
-        // 패스워드 암호화
-        String encodedPstPswd = bbsService.encodePstPswd(bbsVO.getPstPswd());
-        bbsVO.setPstPswd(encodedPstPswd);
-
         bbsService.savePost(bbsVO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

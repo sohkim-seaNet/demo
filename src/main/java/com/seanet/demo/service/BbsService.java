@@ -22,10 +22,14 @@ public class BbsService {
      */
     @Transactional
     public Long savePost(BbsVO bbsVO) {
+        // 비밀번호 암호화
+        String encodedPassword = encodePstPswd(bbsVO.getPstPswd());
+        bbsVO.setPstPswd(encodedPassword);
+
+        // 데이터 저장
         bbsMapper.save(bbsVO);
         return bbsVO.getPstSn();
     }
-
     /**
      * 게시물 리스트 조회
      * @return 게시물 리스트
