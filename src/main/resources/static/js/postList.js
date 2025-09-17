@@ -78,16 +78,42 @@ function renderPagination(pageData) {
     // 이전 버튼
     if (pageData.hasPrevious) {
         html += `<li class="page-item">
-            <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">&laquo;</a></li>`;
+            <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">&laquo;</a>
+        </li>`;
     } else {
         html += `<li class="page-item disabled">
-            <a class="page-link" href="#">&laquo;</a></li>`;
+            <a class="page-link" href="#">&laquo;</a>
+        </li>`;
     }
 
     // 페이지 번호 범위 계산 (최대 5개만 표시)
-    const startPage = Math.max(1, currentPage - 2);
-    const endPage = Math.min(pageData.totalPages, currentPage + 2);
+    const maxButtons = 5;
+    let startPage, endPage;
 
+    if (pageData.totalPages <= maxButtons) {
+        // 전체 페이지가 5개 이하면 모두 표시
+        startPage = 1;
+        endPage = pageData.totalPages;
+    } else {
+        // 전체 페이지가 5개 이상일 때
+        const half = Math.floor(maxButtons / 2); // 2
+
+        if (currentPage <= half) {
+            // 앞쪽 경계: 1, 2페이지일 때
+            startPage = 1;
+            endPage = maxButtons; // 5
+        } else if (currentPage >= pageData.totalPages - half) {
+            // 뒤쪽 경계: 마지막에서 2번째, 마지막일 때
+            startPage = pageData.totalPages - maxButtons + 1;
+            endPage = pageData.totalPages;
+        } else {
+            // 중간: 항상 현재 페이지가 가운데
+            startPage = currentPage - half;
+            endPage = currentPage + half;
+        }
+    }
+
+    // 페이지 번호 버튼들
     for (let i = startPage; i <= endPage; i++) {
         if (i === currentPage) {
             html += `<li class="page-item active">
