@@ -26,9 +26,6 @@
             </div>
         </div>
 
-        dd
-
-
         <table class="table table-striped">
             <thead class="table-light">
             <tr>
