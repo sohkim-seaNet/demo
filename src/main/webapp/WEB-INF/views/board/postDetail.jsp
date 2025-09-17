@@ -6,8 +6,8 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/postDelete.js"></script>
-    <script src="/js/postDetail.js"></script>
+    <script src="/js/board/postDelete.js"></script>
+    <script src="/js/board/postDetail.js"></script>
 </head>
 <body class="bg-light">
     <div class="container mt-5">

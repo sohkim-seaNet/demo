@@ -5,7 +5,7 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/postWrite.js" defer></script>
+    <script src="/js/board/postWrite.js" defer></script>
 </head>
 <body>
     <div class="container mt-4">
