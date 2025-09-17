@@ -16,7 +16,7 @@
 
         <div class="d-flex justify-content-end mb-3">
             <div class="input-group" style="width: auto; max-width: 400px;">
-                <select class="form-select" id="searchType" style="flex: 0 0 120px;">
+                <select class="form-select" id="searchType" style="flex: 0 0 140px;">
                     <option value="title" selected>제목</option>
                     <option value="titleContent">제목+내용</option>
                     <option value="writer">작성자</option>
@@ -45,30 +45,10 @@
 
         <%-- 페이징 --%>
         <div class="d-flex justify-content-center">
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">&laquo;</a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">4</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">5</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">&raquo;</a>
-                </li>
-            </ul>
+            <nav id="pagination">
+            </nav>
         </div>
+
     </div>
     <%@ include file="/WEB-INF/views/inc/modalAlert.jsp" %>
 </body>
