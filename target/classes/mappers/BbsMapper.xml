@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seanet.demo.mappers.BbsMapper">
+
+    <!-- 게시글 저장 -->
+    <insert id="save" parameterType="com.seanet.demo.domain.BbsVO">
+        INSERT INTO TBL_BBS (
+            PST_TTL,
+            PST_CN,
+            PBLR_NM,
+            PST_PSWD,
+            REG_DT,
+            DEL_YN
+        ) VALUES (
+            #{pstTtl},
+            #{pstCn},
+            #{pblrNm},
+            #{pstPswd},
+            GETDATE(),
+            'N'
+        )
+    </insert>
+
+    <!-- 게시글 리스트 조회 -->
+    <select id="findAll" parameterType="long" resultType="com.seanet.demo.domain.BbsVO">
+        SELECT
+            PST_SN AS pstSn,
+            PST_TTL AS pstTtl,
+            PST_CN AS pstCn,
+            PBLR_NM AS pblrNm,
+            REG_DT AS regDt
+        FROM TBL_BBS
+        WHERE DEL_YN = 'N'
+        ORDER BY PST_SN DESC
+    </select>
+
+    <!-- 게시글 상세정보 조회 -->
+    <select id="findBySn" parameterType="long" resultType="com.seanet.demo.domain.BbsVO">
+        SELECT
+            PST_SN AS pstSn,
+            PST_TTL AS pstTtl,
+            PST_CN AS pstCn,
+            PBLR_NM AS pblrNm,
+            PST_PSWD AS pstPswd,
+            REG_DT AS regDt
+        FROM
+            TBL_BBS
+        WHERE
+            PST_SN = #{pstSn}
+        AND DEL_YN = 'N'
+    </select>
+
+    <!-- 게시글 수정 -->
+    <update id="update" parameterType="com.seanet.demo.domain.BbsVO">
+        UPDATE TBL_BBS
+        SET
+            PST_TTL = #{pstTtl},
+            PST_CN = #{pstCn},
+            MDFCN_DT = GETDATE()
+        WHERE PST_SN = #{pstSn}
+    </update>
+
+    <!-- 게시글 삭제 -->
+    <delete id="deleteBySn" parameterType="long">
+        UPDATE TBL_BBS
+        SET
+            MDFCN_DT = GETDATE(),
+            DEL_YN = 'Y'
+        WHERE PST_SN = #{pstSn}
+    </delete>
+
+</mapper>
