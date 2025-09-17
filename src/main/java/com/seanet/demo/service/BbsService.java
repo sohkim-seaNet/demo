@@ -1,5 +1,6 @@
 package com.seanet.demo.service;
 
+import com.seanet.demo.domain.BbsPageDTO;
 import com.seanet.demo.domain.BbsVO;
 import com.seanet.demo.mappers.BbsMapper;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,39 @@ public class BbsService {
     public List<BbsVO> findAllPost() {
         return bbsMapper.findAll();
     }
+
+    /**
+     * 검색 조건에 따른 게시물 페이징 조회
+     * @param pageDTO - 검색 및 페이징 조건
+     * @return 페이징된 게시물 결과
+     */
+    public BbsPageDTO searchPostsWithPaging(BbsPageDTO pageDTO) {
+
+        // OFFSET 값을 미리 계산해서 DTO에 설정
+        int offset = (pageDTO.getPage() - 1) * pageDTO.getSize();
+        pageDTO.setOffset(offset);
+
+        // 1. 게시물 목록 조회
+        List<BbsVO> posts = bbsMapper.searchPostsWithPaging(pageDTO);
+
+        // 2. 전체 개수 조회
+        long totalCount = bbsMapper.countSearchPosts(pageDTO);
+
+        // 3. 페이징 정보 계산
+        int totalPages = totalCount > 0 ? (int) Math.ceil((double) totalCount / pageDTO.getSize()) : 0;
+        boolean hasNext = pageDTO.getPage() < totalPages;
+        boolean hasPrevious = pageDTO.getPage() > 1;
+
+        // 4. 결과 설정
+        pageDTO.setContent(posts);
+        pageDTO.setTotalElements(totalCount);
+        pageDTO.setTotalPages(totalPages);
+        pageDTO.setHasNext(hasNext);
+        pageDTO.setHasPrevious(hasPrevious);
+
+        return pageDTO;
+    }
+
 
     /**
      * 게시물 상세정보 조회

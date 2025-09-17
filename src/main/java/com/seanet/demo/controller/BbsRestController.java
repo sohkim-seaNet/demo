@@ -1,5 +1,6 @@
 package com.seanet.demo.controller;
 
+import com.seanet.demo.domain.BbsPageDTO;
 import com.seanet.demo.domain.BbsVO;
 import com.seanet.demo.service.BbsService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,28 @@ public class BbsRestController {
     public ResponseEntity<List<BbsVO>> getAllPosts() {
         List<BbsVO> list = bbsService.findAllPost();
         return ResponseEntity.ok(list);
+    }
+
+    // 게시물 페이징 + 검색 조회
+    @GetMapping("/search")
+    public ResponseEntity<BbsPageDTO> searchPosts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchKeyword) {
+
+        // 요청 DTO 생성
+        BbsPageDTO pageDTO = BbsPageDTO.builder()
+                .page(page)
+                .size(size)
+                .searchType(searchType)
+                .searchKeyword(searchKeyword)
+                .build();
+
+        // 서비스 호출
+        BbsPageDTO result = bbsService.searchPostsWithPaging(pageDTO);
+
+        return ResponseEntity.ok(result);
     }
 
     // 게시물 단건 조회

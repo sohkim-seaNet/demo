@@ -35,6 +35,69 @@
         ORDER BY PST_SN DESC
     </select>
 
+    <!-- ===== 새로 추가: 페이징 + 검색 ===== -->
+
+    <!-- 검색 + 페이징 조회 -->
+    <select id="searchPostsWithPaging" parameterType="com.seanet.demo.domain.BbsPageDTO"
+            resultType="com.seanet.demo.domain.BbsVO">
+        SELECT
+            PST_SN AS pstSn,
+            PST_TTL AS pstTtl,
+            PST_CN AS pstCn,
+            PBLR_NM AS pblrNm,
+            REG_DT AS regDt,
+            MDFCN_DT AS mdfcnDt
+        FROM TBL_BBS
+        WHERE DEL_YN = 'N'
+        <if test="searchKeyword != null and searchKeyword != ''">
+            <choose>
+                <when test="searchType == 'title'">
+                    AND PST_TTL LIKE '%' + #{searchKeyword} + '%'
+                </when>
+                <when test="searchType == 'titleContent'">
+                    AND (PST_TTL LIKE '%' + #{searchKeyword} + '%'
+                    OR PST_CN LIKE '%' + #{searchKeyword} + '%')
+                </when>
+                <when test="searchType == 'writer'">
+                    AND PBLR_NM LIKE '%' + #{searchKeyword} + '%'
+                </when>
+                <otherwise>
+                    <!-- searchType이 없거나 잘못된 값이면 제목에서 검색 -->
+                    AND PST_TTL LIKE '%' + #{searchKeyword} + '%'
+                </otherwise>
+            </choose>
+        </if>
+        ORDER BY PST_SN DESC
+        OFFSET #{offset} ROWS
+        FETCH NEXT #{size} ROWS ONLY
+    </select>
+
+    <!-- 검색 결과 총 개수 -->
+    <select id="countSearchPosts" parameterType="com.seanet.demo.domain.BbsPageDTO"
+            resultType="long">
+        SELECT COUNT(*)
+        FROM TBL_BBS
+        WHERE DEL_YN = 'N'
+        <if test="searchKeyword != null and searchKeyword != ''">
+            <choose>
+                <when test="searchType == 'title'">
+                    AND PST_TTL LIKE '%' + #{searchKeyword} + '%'
+                </when>
+                <when test="searchType == 'titleContent'">
+                    AND (PST_TTL LIKE '%' + #{searchKeyword} + '%'
+                    OR PST_CN LIKE '%' + #{searchKeyword} + '%')
+                </when>
+                <when test="searchType == 'writer'">
+                    AND PBLR_NM LIKE '%' + #{searchKeyword} + '%'
+                </when>
+                <otherwise>
+                    <!-- searchType이 없거나 잘못된 값이면 제목에서 검색 -->
+                    AND PST_TTL LIKE '%' + #{searchKeyword} + '%'
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
     <!-- 게시글 상세정보 조회 -->
     <select id="findBySn" parameterType="long" resultType="com.seanet.demo.domain.BbsVO">
         SELECT
