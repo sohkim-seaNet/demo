@@ -1,47 +1,51 @@
-document.getElementById('btnSubmit').addEventListener('click', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btnSubmit').addEventListener('click', async () => {
+        // 클라이언트 사이드 유효성 검증
+        const title = document.getElementById('pstTtl').value.trim();
+        const content = document.getElementById('pstCn').value.trim();
+        const writer = document.getElementById('pblrNm').value.trim();
+        const password = document.getElementById('pstPswd').value.trim();
 
-    const title = document.getElementById('pstTtl').value.trim();
-    const content = document.getElementById('pstCn').value.trim();
-    const writer = document.getElementById('pblrNm').value.trim();
-    const password = document.getElementById('pstPswd').value.trim();
+        if (!title) {
+            showAlert('제목을 입력해주세요.');
+            return;
+        }
+        if (!content) {
+            showAlert('내용을 입력해주세요.');
+            return;
+        }
+        if (!writer) {
+            showAlert('작성자를 입력해주세요.');
+            return;
+        }
+        if (!password) {
+            showAlert('비밀번호를 입력해주세요.');
+            return;
+        }
 
-    if (!title) {
-        showAlert('제목을 입력해주세요.');
-        return;
-    }
-    if (!content) {
-        showAlert('내용을 입력해주세요.');
-        return;
-    }
-    if (!writer) {
-        showAlert('작성자를 입력해주세요.');
-        return;
-    }
-    if (!password) {
-        showAlert('비밀번호를 입력해주세요.');
-        return;
-    }
+        const data = {
+            pstTtl: title,
+            pstCn: content,
+            pblrNm: writer,
+            pstPswd: password
+        };
 
-    const data = {
-        pstTtl: title,
-        pstCn: content,
-        pblrNm: writer,
-        pstPswd: password
-    };
+        try {
+            const response = await fetch('/api/post/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
 
-    fetch('/api/post/', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    })
-        .then(res => {
-            if (res.status === 201) {
-                showAlert('글 작성이 완료되었습니다.', 'Success', () => {
-                    window.location.href = '/post'; // 글 목록 페이지 이동
-                });
-            } else {
+            if (!response.ok) {
                 throw new Error('글 작성에 실패했습니다.');
             }
-        })
-        .catch(err => alert(err.message));
+
+            showAlert('글이 성공적으로 작성되었습니다.', 'Success', () => {
+                window.location.href = '/post';
+            });
+        } catch (error) {
+            showAlert(error.message, 'Error');
+        }
+    });
 });

@@ -31,32 +31,44 @@ function initDeleteButton(postSn, showAlert, showConfirm, showPasswordInputModal
     if (!btnDelete) return;
 
     btnDelete.addEventListener('click', () => {
-        showPasswordInputModal((inputPassword) => {
-            // 1단계: 비밀번호 검증
-            fetch(`/api/post/${postSn}/verifyPassword`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({pstPswd: inputPassword})
-            })
-                .then(res => {
-                    if (res.status === 401) throw new Error('비밀번호가 일치하지 않습니다.');
-                    if (!res.ok) throw new Error('비밀번호 확인 실패');
-                    // 2단계: 삭제 최종 확인 모달
-                    showConfirm('정말로 삭제하시겠습니까?', '삭제 확인', () => {
+        showPasswordInputModal(async (inputPassword) => {
+            try {
+                // 1단계: 비밀번호 검증
+                const verifyResponse = await fetch(`/api/post/${postSn}/verifyPassword`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({pstPswd: inputPassword})
+                });
+
+                if (verifyResponse.status === 401) {
+                    throw new Error('비밀번호가 일치하지 않습니다.');
+                }
+                if (!verifyResponse.ok) {
+                    throw new Error('비밀번호 확인 실패');
+                }
+
+                // 2단계: 삭제 최종 확인 모달
+                showConfirm('정말로 삭제하시겠습니까?', '삭제 확인', async () => {
+                    try {
                         // 3단계: 삭제 요청
-                        fetch(`/api/post/${postSn}`, {
+                        const deleteResponse = await fetch(`/api/post/${postSn}`, {
                             method: 'DELETE',
-                        })
-                            .then(delRes => {
-                                if (!delRes.ok) throw new Error('삭제 실패');
-                                showAlert('게시글이 삭제되었습니다.', '삭제 완료', () => {
-                                    window.location.href = '/post';
-                                });
-                            })
-                            .catch(err => showAlert(err.message, '삭제 오류'));
-                    });
-                })
-                .catch(err => showAlert(err.message, '비밀번호 오류'));
+                        });
+
+                        if (!deleteResponse.ok) {
+                            throw new Error('삭제 실패');
+                        }
+
+                        showAlert('게시글이 삭제되었습니다.', '삭제 완료', () => {
+                            window.location.href = '/post';
+                        });
+                    } catch (error) {
+                        showAlert(error.message, '삭제 오류');
+                    }
+                });
+            } catch (error) {
+                showAlert(error.message, '비밀번호 오류');
+            }
         });
     });
 }

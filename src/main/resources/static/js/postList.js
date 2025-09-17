@@ -10,33 +10,31 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 게시글 목록 로드
-function loadPosts() {
-    const params = new URLSearchParams({
-        page: currentPage,
-        size: 10
-    });
-
-    // 검색 조건이 있으면 추가
-    if (currentSearchKeyword && currentSearchKeyword.trim() !== '') {
-        params.append('searchType', currentSearchType);
-        params.append('searchKeyword', currentSearchKeyword.trim());
-    }
-
-    fetch(`/api/post/search?${params}`)
-        .then(response => {
-            if (!response.ok) throw new Error('네트워크 응답 오류');
-            return response.json();
-        })
-        .then(data => {
-            renderPostList(data.content);
-            renderPagination(data);
-        })
-        .catch(error => {
-            console.error('게시물 로드 실패:', error);
-            const tbody = document.getElementById('postsList');
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">게시물을 불러오는 데 실패했습니다.</td></tr>';
-            showAlert('게시물을 불러오는 데 실패했습니다.', 'Error');
+async function loadPosts() {
+    try {
+        const params = new URLSearchParams({
+            page: currentPage,
+            size: 10
         });
+
+        // 검색 조건이 있으면 추가
+        if (currentSearchKeyword && currentSearchKeyword.trim() !== '') {
+            params.append('searchType', currentSearchType);
+            params.append('searchKeyword', currentSearchKeyword.trim());
+        }
+
+        const response = await fetch(`/api/post/search?${params}`);
+        if (!response.ok) throw new Error('네트워크 응답 오류');
+
+        const data = await response.json();
+        renderPostList(data.content);
+        renderPagination(data);
+    } catch (error) {
+        console.error('게시물 로드 실패:', error);
+        const tbody = document.getElementById('postsList');
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">게시물을 불러오는 데 실패했습니다.</td></tr>';
+        showAlert('게시물을 불러오는 데 실패했습니다.', 'Error');
+    }
 }
 
 // 게시글 목록 렌더링
