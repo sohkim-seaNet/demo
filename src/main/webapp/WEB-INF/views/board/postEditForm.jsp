@@ -10,7 +10,7 @@
 <body>
 <div class="container mt-4">
     <h2>글 수정</h2>
-    <form id="editForm">
+    <form id="editForm" >
         <div class="mb-3">
             <label for="pstTtl" class="form-label">제목</label>
             <input type="text" class="form-control" id="pstTtl" name="pstTtl" required>
@@ -33,7 +33,7 @@
 
         <div class="d-flex justify-content-end mt-3">
             <button type="button" class="btn btn-secondary me-2" onclick="history.back()">취소</button>
-            <button type="submit" class="btn btn-primary">수정 완료</button>
+            <button type="button" class="btn btn-primary" id="btnEdit">수정 완료</button>
         </div>
     </form>
 </div>

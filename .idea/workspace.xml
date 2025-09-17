@@ -5,10 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98d2154d-020e-4363-816d-bb88ff383a86" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/board/postList.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/board/postList.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/postEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/js/postEdit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/postWrite.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/js/postWrite.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/board/postEditForm.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/board/postEditForm.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/js/postEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/static/js/postEdit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/js/postWrite.js" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/static/js/postWrite.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -237,7 +240,7 @@
       <workItem from="1757896485851" duration="17846000" />
       <workItem from="1757977701723" duration="30642000" />
       <workItem from="1758063529517" duration="1755000" />
-      <workItem from="1758067641974" duration="243000" />
+      <workItem from="1758067641974" duration="2643000" />
     </task>
     <servers />
   </component>

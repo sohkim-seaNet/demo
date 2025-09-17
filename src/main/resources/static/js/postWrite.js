@@ -1,4 +1,5 @@
 document.getElementById('btnSubmit').addEventListener('click', () => {
+
     const title = document.getElementById('pstTtl').value.trim();
     const content = document.getElementById('pstCn').value.trim();
     const writer = document.getElementById('pblrNm').value.trim();
@@ -21,7 +22,7 @@ document.getElementById('btnSubmit').addEventListener('click', () => {
         return;
     }
 
-    const payload = {
+    const data = {
         pstTtl: title,
         pstCn: content,
         pblrNm: writer,
@@ -31,7 +32,7 @@ document.getElementById('btnSubmit').addEventListener('click', () => {
     fetch('/api/post/', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload)
+        body: JSON.stringify(data)
     })
         .then(res => {
             if (res.status === 201) {

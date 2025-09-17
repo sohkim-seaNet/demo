@@ -22,15 +22,36 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert(error.message, 'Error', () => window.location.href = '/post');
         });
 
-    // 폼 제출 이벤트 처리
-    document.getElementById('editForm').addEventListener('submit', (e) => {
-        e.preventDefault();
+    // 수정 버튼 클릭 이벤트 처리
+    document.getElementById('btnEdit').addEventListener('click', () => {
+        // 클라이언트 사이드 유효성 검증
+        const title = document.getElementById('pstTtl').value.trim();
+        const content = document.getElementById('pstCn').value.trim();
+        const writer = document.getElementById('pblrNm').value.trim();
+        const password = document.getElementById('pstPswd').value.trim();
+
+        if (!title) {
+            showAlert('제목을 입력해주세요.');
+            return;
+        }
+        if (!content) {
+            showAlert('내용을 입력해주세요.');
+            return;
+        }
+        if (!writer) {
+            showAlert('작성자를 입력해주세요.');
+            return;
+        }
+        if (!password) {
+            showAlert('비밀번호를 입력해주세요.');
+            return;
+        }
 
         const data = {
-            pstTtl: document.getElementById('pstTtl').value.trim(),
-            pstCn: document.getElementById('pstCn').value.trim(),
-            pblrNm: document.getElementById('pblrNm').value.trim(),
-            pstPswd: document.getElementById('pstPswd').value
+            pstTtl: title,
+            pstCn: content,
+            pblrNm: writer,
+            pstPswd: password
         };
 
         fetch(`/api/post/${postSn}`, {
