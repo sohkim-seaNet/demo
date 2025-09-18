@@ -16,9 +16,8 @@
 <body>
 <div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>회원가입</h2>
-        <a href="/board/list" class="btn btn-outline-secondary btn-sm">게시판으로</a>
+    <div class="d-flex justify-content-end align-items-center mb-3">
+        <a href="/board/list" class="btn btn-outline-info btn-sm">게시판으로</a>
     </div>
 
     <div class="row justify-content-center">
@@ -60,7 +59,7 @@
 
                         <div class="d-grid gap-2">
                             <button type="button" class="btn btn-primary" id="btnSubmit">회원가입</button>
-                            <a href="/user/login" class="btn btn-outline-secondary">로그인으로</a>
+                            <a href="/user/login" class="btn btn-light">로그인으로</a>
                         </div>
                     </form>
                 </div>

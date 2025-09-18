@@ -16,9 +16,8 @@
 <body>
 <div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>로그인</h2>
-        <a href="/board/list" class="btn btn-outline-secondary btn-sm">게시판으로</a>
+    <div class="d-flex justify-content-end align-items-center mb-3">
+        <a href="/board/list" class="btn btn-outline-info btn-sm">게시판으로</a>
     </div>
 
     <div class="row justify-content-center">
@@ -38,8 +37,8 @@
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">로그인</button>
-                            <a href="/user/signup" class="btn btn-outline-secondary">회원가입</a>
+                            <button type="submit" class="btn btn-primary" id="loginBtn">로그인</button>
+                            <a href="/user/signup" class="btn btn-light">회원가입</a>
                         </div>
                     </form>
                 </div>
