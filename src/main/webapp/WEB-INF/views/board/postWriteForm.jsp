@@ -8,6 +8,7 @@
     <script src="/js/board/postWrite.js" defer></script>
 </head>
 <body>
+    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
     <div class="container mt-4">
 
         <h2>글 작성</h2>
