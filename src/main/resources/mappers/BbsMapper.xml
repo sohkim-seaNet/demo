@@ -6,19 +6,21 @@
     <!-- 게시글 저장 -->
     <insert id="save" parameterType="com.seanet.demo.domain.BbsVO">
         INSERT INTO TBL_BBS (
-            PST_TTL,
-            PST_CN,
-            PBLR_NM,
-            PST_PSWD,
-            REG_DT,
-            DEL_YN
+        PST_TTL,
+        PST_CN,
+        PBLR_NM,
+        USER_ID,
+        PST_PSWD,    <!-- 나중에 제거 -->
+        REG_DT,
+        DEL_YN
         ) VALUES (
-            #{pstTtl},
-            #{pstCn},
-            #{pblrNm},
-            #{pstPswd},
-            GETDATE(),
-            'N'
+        #{pstTtl},
+        #{pstCn},
+        #{pblrNm},
+        #{userId},
+        #{pstPswd},  <!-- 나중에 제거 -->
+        GETDATE(),
+        'N'
         )
     </insert>
 
@@ -29,6 +31,7 @@
             PST_TTL AS pstTtl,
             PST_CN AS pstCn,
             PBLR_NM AS pblrNm,
+            USER_ID AS userId,
             REG_DT AS regDt
         FROM TBL_BBS
         WHERE DEL_YN = 'N'
@@ -45,6 +48,7 @@
             PST_TTL AS pstTtl,
             PST_CN AS pstCn,
             PBLR_NM AS pblrNm,
+            USER_ID AS userId,
             REG_DT AS regDt,
             MDFCN_DT AS mdfcnDt
         FROM TBL_BBS
@@ -106,6 +110,7 @@
             PST_CN AS pstCn,
             PBLR_NM AS pblrNm,
             PST_PSWD AS pstPswd,
+            USER_ID AS userId,
             REG_DT AS regDt
         FROM
             TBL_BBS

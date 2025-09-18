@@ -2,6 +2,7 @@ package com.seanet.demo.service;
 
 import com.seanet.demo.domain.BbsPageDTO;
 import com.seanet.demo.domain.BbsVO;
+import com.seanet.demo.domain.UserVO;
 import com.seanet.demo.mappers.BbsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,16 +16,28 @@ import java.util.List;
 public class BbsService {
 
     private final BbsMapper bbsMapper;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     /**
      * 게시물 저장
      */
     @Transactional
-    public Long savePost(BbsVO bbsVO) {
-        // 비밀번호 암호화
-        String encodedPassword = encodePstPswd(bbsVO.getPstPswd());
-        bbsVO.setPstPswd(encodedPassword);
+    public Long savePost(BbsVO bbsVO, String userId) {
+        // 현재 로그인한 사용자 정보 설정
+        bbsVO.setUserId(userId);
+
+        // 사용자 닉네임을 작성자명으로 설정
+        UserVO user = userService.findByUserId(userId);
+        if (user != null) {
+            bbsVO.setPblrNm(user.getNickname());
+        }
+
+        // 비밀번호 암호화 (나중에 제거 예정)
+        if (bbsVO.getPstPswd() != null) {
+            String encodedPassword = encodePstPswd(bbsVO.getPstPswd());
+            bbsVO.setPstPswd(encodedPassword);
+        }
 
         // 데이터 저장
         bbsMapper.save(bbsVO);
@@ -70,7 +83,6 @@ public class BbsService {
         return pageDTO;
     }
 
-
     /**
      * 게시물 상세정보 조회
      * @param pstSn - 게시물일련번호
@@ -87,7 +99,11 @@ public class BbsService {
      * @return pstSn
      */
     @Transactional
-    public boolean updatePost(BbsVO bbsVO) {
+    public boolean updatePost(BbsVO bbsVO, String userId) {
+        // 권한 체크
+        if (!hasPermission(bbsVO.getPstSn(), userId)) {
+            return false;
+        }
         int count = bbsMapper.update(bbsVO);
         return count > 0;
     }
@@ -98,7 +114,12 @@ public class BbsService {
      * @param pstSn - 게시물일련번호
      * @return pstSn
      */
-    public boolean deletePost(Long pstSn) {
+    public boolean deletePost(Long pstSn, String userId) {
+        // 권한 체크
+        if (!hasPermission(pstSn, userId)) {
+            return false;
+        }
+
         int count = bbsMapper.deleteBySn(pstSn);
         return count > 0;
     }
@@ -110,6 +131,17 @@ public class BbsService {
      */
     public String encodePstPswd(String pstPswd) {
         return passwordEncoder.encode(pstPswd);
+    }
+
+    /**
+     * 게시물 수정/삭제 권한 확인
+     */
+    public boolean hasPermission(Long pstSn, String userId) {
+        BbsVO post = bbsMapper.findBySn(pstSn);
+        if (post == null || userId == null) {
+            return false;
+        }
+        return post.getUserId().equals(userId);
     }
 
     /**

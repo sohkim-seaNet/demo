@@ -2,6 +2,7 @@ package com.seanet.demo.controller;
 
 import com.seanet.demo.domain.BbsPageDTO;
 import com.seanet.demo.domain.BbsVO;
+import com.seanet.demo.mappers.BbsMapper;
 import com.seanet.demo.service.BbsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/post")
@@ -17,11 +17,22 @@ import java.util.Map;
 public class BbsRestController {
 
     private final BbsService bbsService;
+    private final BbsMapper bbsMapper;
+
+    /**
+     * 현재 로그인 사용자 ID 조회 (임시)
+     * @return 사용자 ID
+     */
+    private String getCurrentUserId() {
+        // TODO: 나중에 Spring Security Authentication으로 변경
+        return "test";  // 임시로 test 사용자 고정
+    }
 
     //게시물 작성
     @PostMapping("/")
     public ResponseEntity<Void> savePost(@RequestBody BbsVO bbsVO){
-        bbsService.savePost(bbsVO);
+        String currentUserId = getCurrentUserId();
+        bbsService.savePost(bbsVO, currentUserId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -67,34 +78,26 @@ public class BbsRestController {
     // 게시물 수정
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody BbsVO bbsVO) {
-        if (!bbsService.verifyPassword(id, bbsVO.getPstPswd())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+        String currentUserId = getCurrentUserId();
         bbsVO.setPstSn(id);
-        boolean updated = bbsService.updatePost(bbsVO);
+        boolean updated = bbsService.updatePost(bbsVO, currentUserId);  // ← userId 파라미터 추가
+
         if(!updated) {
-            return ResponseEntity.notFound().build();
+            // 권한 없음 또는 게시글 없음
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.noContent().build();
-    }
-
-    //비밀번호 검증용
-    @PostMapping("/{id}/verifyPassword")
-    public ResponseEntity<Void> verifyPassword(@PathVariable Long id, @RequestBody Map<String, String> request) {
-        String inputPassword = request.get("pstPswd");
-        if (inputPassword == null || !bbsService.verifyPassword(id, inputPassword)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        return ResponseEntity.ok().build();
     }
 
     // 게시물 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        boolean deleted = bbsService.deletePost(id);
+        String currentUserId = getCurrentUserId();
+        boolean deleted = bbsService.deletePost(id, currentUserId);  // ← userId 파라미터 추가
+
         if(!deleted) {
-            return ResponseEntity.notFound().build();
+            // 권한 없음 또는 게시글 없음
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.noContent().build();
     }
