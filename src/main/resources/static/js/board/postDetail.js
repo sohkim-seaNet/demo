@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!postSn) {
         showAlert('잘못된 접근입니다.', 'Error', () => {
-            window.location.href = '/post';
+            window.location.href = '/board/list';
         });
         return;
     }
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('regDt').textContent = new Date(post.regDt).toLocaleString();
 
         const btnEdit = document.getElementById('btnEdit');
-        btnEdit.href = `/post/edit/${postSn}`;
+        btnEdit.href = `/board/edit/${postSn}`;
 
     } catch (error) {
         console.error('게시글 상세 조회 실패:', error);

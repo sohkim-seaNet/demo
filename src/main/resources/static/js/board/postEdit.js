@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             showAlert('글이 성공적으로 수정되었습니다.', 'Success', () => {
-                window.location.href = `/post/${postSn}`;
+                window.location.href = `/board/detail/${postSn}`;
             });
         } catch (error) {
             showAlert(error.message, 'Error');

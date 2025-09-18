@@ -8,6 +8,7 @@
     <script src="/js/board/postList.js" defer></script>
 </head>
 <body>
+    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
     <div class="container mt-4">
 
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -40,7 +41,7 @@
         </table>
 
         <div class="d-flex justify-content-end mt-3 mb-5">
-            <a href="/post/write" class="btn btn-primary">글 작성</a>
+            <a href="/board/write" class="btn btn-primary">글 작성</a>
         </div>
 
         <%-- 페이징 --%>

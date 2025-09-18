@@ -60,7 +60,7 @@ function initDeleteButton(postSn, showAlert, showConfirm, showPasswordInputModal
                         }
 
                         showAlert('게시글이 삭제되었습니다.', '삭제 완료', () => {
-                            window.location.href = '/post';
+                            window.location.href = '/board/list';
                         });
                     } catch (error) {
                         showAlert(error.message, '삭제 오류');

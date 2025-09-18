@@ -53,7 +53,7 @@ function renderPostList(posts) {
 
         tr.innerHTML = `
             <td>${post.pstSn}</td>
-            <td><a href="/post/${post.pstSn}">${post.pstTtl}</a></td>
+            <td><a href="/board/detail/${post.pstSn}">${post.pstTtl}</a></td>
             <td>${post.pblrNm}</td>
             <td>${formattedDate}</td>`;
 

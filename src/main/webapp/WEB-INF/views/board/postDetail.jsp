@@ -10,6 +10,8 @@
     <script src="/js/board/postDetail.js"></script>
 </head>
 <body class="bg-light">
+    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
+
     <div class="container mt-5">
 
         <div class="card shadow-sm">
@@ -23,7 +25,7 @@
                     <span>작성일: <strong id="regDt"></strong></span>
                 </div>
                 <div class="d-flex gap-2 justify-content-end">
-                    <a href="/post" class="btn btn-outline-secondary">글목록</a>
+                    <a href="/board/list" class="btn btn-outline-secondary">글목록</a>
                     <a href="#" id="btnEdit" class="btn btn-outline-primary">수정</a>
                     <button id="btnDelete" class="btn btn-outline-danger">삭제</button>
                 </div>
