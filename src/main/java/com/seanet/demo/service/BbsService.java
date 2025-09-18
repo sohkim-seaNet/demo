@@ -17,7 +17,6 @@ public class BbsService {
 
     private final BbsMapper bbsMapper;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * 게시물 저장
@@ -31,12 +30,6 @@ public class BbsService {
         UserVO user = userService.findByUserId(userId);
         if (user != null) {
             bbsVO.setPblrNm(user.getNickname());
-        }
-
-        // 비밀번호 암호화 (나중에 제거 예정)
-        if (bbsVO.getPstPswd() != null) {
-            String encodedPassword = encodePstPswd(bbsVO.getPstPswd());
-            bbsVO.setPstPswd(encodedPassword);
         }
 
         // 데이터 저장
@@ -125,33 +118,19 @@ public class BbsService {
     }
 
     /**
-     * 비밀번호 암호화
-     * @param pstPswd - 게시물비밀번호
-     * @return encodedPstPswd
-     */
-    public String encodePstPswd(String pstPswd) {
-        return passwordEncoder.encode(pstPswd);
-    }
-
-    /**
      * 게시물 수정/삭제 권한 확인
      */
     public boolean hasPermission(Long pstSn, String userId) {
-        BbsVO post = bbsMapper.findBySn(pstSn);
-        if (post == null || userId == null) {
+        if (pstSn == null || userId == null) {
             return false;
         }
-        return post.getUserId().equals(userId);
+
+        BbsVO post = bbsMapper.findBySn(pstSn);
+        if (post == null) {
+            return false;
+        }
+
+        return userId.equals(post.getUserId());
     }
 
-    /**
-     * 비밀번호 매치 여부 확인
-     * @param pstSn - 게시물일련번호
-     * @param pswd - 사용자 입력 비밀번호
-     * @return
-     */
-    public boolean verifyPassword(Long pstSn, String pswd) {
-        String actualPassword = findPostById(pstSn).getPstPswd();
-        return passwordEncoder.matches(pswd, actualPassword);
-    }
 }

@@ -3,75 +3,114 @@ document.addEventListener('DOMContentLoaded', async () => {
     const postSn = path.substring(path.lastIndexOf('/') + 1);
 
     if (!postSn) {
-        showAlert('잘못된 접근입니다.', 'Error', () => window.location.href = '/post');
+        showAlert('잘못된 접근입니다.', '오류', () => {
+            window.location.href = '/board/list';
+        });
         return;
     }
 
-    // 기존 게시글 데이터 불러오기
+    // 로그인 체크 및 권한 체크
     try {
-        const response = await fetch(`/api/post/${postSn}`);
-        if (!response.ok) throw new Error('게시글을 불러오는 데 실패했습니다.');
+        const [postResponse, userResponse] = await Promise.all([
+            fetch(`/api/post/${postSn}`),
+            fetch('/api/auth/me')
+        ]);
 
-        const post = await response.json();
+        if (!postResponse.ok) {
+            throw new Error('게시글을 불러오는 데 실패했습니다.');
+        }
 
+        if (!userResponse.ok) {
+            throw new Error('사용자 정보를 불러오는 데 실패했습니다.');
+        }
+
+        const post = await postResponse.json();
+        const userInfo = await userResponse.json();
+
+        // 로그인 체크
+        if (!userInfo.isAuthenticated) {
+            showAlert('로그인이 필요합니다.', '알림', () => {
+                location.href = '/user/login';
+            });
+            return;
+        }
+
+        // 권한 체크 (본인 글만 수정 가능)
+        if (post.userId !== userInfo.userId) {
+            showAlert('본인이 작성한 글만 수정할 수 있습니다.', '권한 없음', () => {
+                history.back();
+            });
+            return;
+        }
+
+        // 기존 게시글 데이터 설정
         document.getElementById('pstTtl').value = post.pstTtl;
         document.getElementById('pstCn').value = post.pstCn;
         document.getElementById('pblrNm').value = post.pblrNm;
+
     } catch (error) {
-        showAlert(error.message, 'Error', () => window.location.href = '/post');
+        console.error('데이터 로드 실패:', error);
+        showAlert(error.message, '오류', () => {
+            window.location.href = '/board/list';
+        });
+        return;
     }
 
-    // 수정 버튼 클릭 이벤트 처리
+    // 수정 완료 버튼 이벤트
     document.getElementById('btnEdit').addEventListener('click', async () => {
-        // 클라이언트 사이드 유효성 검증
+        // 입력값 검증
         const title = document.getElementById('pstTtl').value.trim();
         const content = document.getElementById('pstCn').value.trim();
-        const writer = document.getElementById('pblrNm').value.trim();
-        const password = document.getElementById('pstPswd').value.trim();
 
         if (!title) {
             showAlert('제목을 입력해주세요.');
             return;
         }
+
         if (!content) {
             showAlert('내용을 입력해주세요.');
             return;
         }
-        if (!writer) {
-            showAlert('작성자를 입력해주세요.');
-            return;
-        }
-        if (!password) {
-            showAlert('비밀번호를 입력해주세요.');
-            return;
-        }
 
-        const data = {
+        // 서버로 전송할 데이터 (제목, 내용만)
+        const updateData = {
             pstTtl: title,
-            pstCn: content,
-            pblrNm: writer,
-            pstPswd: password
+            pstCn: content
         };
 
         try {
             const response = await fetch(`/api/post/${postSn}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updateData)
             });
 
             if (response.status === 401) {
-                throw new Error('비밀번호가 일치하지 않습니다.');
+                showAlert('로그인이 필요합니다.', '알림', () => {
+                    location.href = '/user/login';
+                });
+                return;
             }
+
+            if (response.status === 403) {
+                showAlert('수정 권한이 없습니다.');
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error('수정에 실패했습니다.');
             }
 
-            showAlert('글이 성공적으로 수정되었습니다.', 'Success', () => {
+            // 성공시 상세 페이지로 이동
+            showAlert('글이 성공적으로 수정되었습니다.', '완료', () => {
                 window.location.href = `/board/detail/${postSn}`;
             });
+
         } catch (error) {
-            showAlert(error.message, 'Error');
+            console.error('수정 실패:', error);
+            showAlert(error.message, '오류');
         }
     });
 });

@@ -35,13 +35,6 @@ public interface UserMapper {
     long countByNickname(String nickname);
 
     /**
-     * 이메일 중복 확인
-     * @param email - 이메일
-     * @return 중복 개수
-     */
-    long countByEmail(String email);
-
-    /**
      * 사용자 정보 수정
      * @param userVO - 사용자 정보
      * @return 수정된 행 수

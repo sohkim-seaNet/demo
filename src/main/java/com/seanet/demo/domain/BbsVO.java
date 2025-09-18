@@ -15,7 +15,6 @@ public class BbsVO {
     private String pstCn;          // 게시물내용
     private String pblrNm;         // 게시자명
     private String userId;         // 작성자ID
-    private String pstPswd;        // 게시물비밀번호
     private LocalDateTime regDt;   // 등록일시
     private LocalDateTime mdfcnDt; // 수정일시
     private String delYn;          // 삭제여부

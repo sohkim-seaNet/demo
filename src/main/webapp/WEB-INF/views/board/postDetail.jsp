@@ -6,8 +6,8 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/board/postDelete.js"></script>
     <script src="/js/board/postDetail.js"></script>
+    <script src="/js/board/postDelete.js"></script>
 </head>
 <body class="bg-light">
     <%@ include file="/WEB-INF/views/inc/header.jsp" %>
@@ -26,27 +26,11 @@
                 </div>
                 <div class="d-flex gap-2 justify-content-end">
                     <a href="/board/list" class="btn btn-outline-secondary">글목록</a>
-                    <a href="#" id="btnEdit" class="btn btn-outline-primary">수정</a>
-                    <button id="btnDelete" class="btn btn-outline-danger">삭제</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <%-- 비밀번호 입력 modal --%>
-    <div class="modal fade" id="passwordInputModal" tabindex="-1" aria-hidden="true" aria-labelledby="passwordInputModalLabel">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="passwordInputModalLabel">비밀번호 입력</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="password" id="inputPassword" class="form-control" placeholder="비밀번호를 입력하세요" />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="button" id="passwordSubmitBtn" class="btn btn-primary">확인</button>
+                    <!-- 권한 체크 후 표시할 버튼들 -->
+                    <div id="authorButtons" style="display: none;">
+                        <a href="#" id="btnEdit" class="btn btn-outline-primary">수정</a>
+                        <button id="btnDelete" class="btn btn-outline-danger">삭제</button>
+                    </div>
                 </div>
             </div>
         </div>

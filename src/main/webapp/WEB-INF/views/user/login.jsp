@@ -5,7 +5,7 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/login.js" defer></script>
+    <script src="/js/user/login.js"></script>
     <style>
         .login-card {
             border-radius: 10px;
@@ -28,17 +28,15 @@
                     <h4 class="mb-0 text-center">환영합니다!</h4>
                 </div>
                 <div class="card-body">
-                    <form id="loginForm">
+                    <form method="post" action="/login">
                         <div class="mb-3">
                             <label for="username" class="form-label">아이디</label>
                             <input type="text" class="form-control" id="username" name="username" required>
                         </div>
-
                         <div class="mb-3">
                             <label for="password" class="form-label">비밀번호</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
-
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">로그인</button>
                             <a href="/user/signup" class="btn btn-outline-secondary">회원가입</a>

@@ -10,7 +10,6 @@
         PST_CN,
         PBLR_NM,
         USER_ID,
-        PST_PSWD,    <!-- 나중에 제거 -->
         REG_DT,
         DEL_YN
         ) VALUES (
@@ -18,7 +17,6 @@
         #{pstCn},
         #{pblrNm},
         #{userId},
-        #{pstPswd},  <!-- 나중에 제거 -->
         GETDATE(),
         'N'
         )
@@ -109,7 +107,6 @@
             PST_TTL AS pstTtl,
             PST_CN AS pstCn,
             PBLR_NM AS pblrNm,
-            PST_PSWD AS pstPswd,
             USER_ID AS userId,
             REG_DT AS regDt
         FROM

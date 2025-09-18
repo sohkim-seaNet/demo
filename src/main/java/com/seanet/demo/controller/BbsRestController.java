@@ -7,9 +7,13 @@ import com.seanet.demo.service.BbsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/post")
@@ -20,18 +24,28 @@ public class BbsRestController {
     private final BbsMapper bbsMapper;
 
     /**
-     * 현재 로그인 사용자 ID 조회 (임시)
-     * @return 사용자 ID
+     * 현재 로그인 사용자 ID 조회 (내부용)
      */
     private String getCurrentUserId() {
-        // TODO: 나중에 Spring Security Authentication으로 변경
-        return "test";  // 임시로 test 사용자 고정
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() ||
+                authentication.getPrincipal().equals("anonymousUser")) {
+            return null;
+        }
+
+        return authentication.getName();
     }
 
     //게시물 작성
     @PostMapping("/")
     public ResponseEntity<Void> savePost(@RequestBody BbsVO bbsVO){
         String currentUserId = getCurrentUserId();
+
+        if (currentUserId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 401
+        }
+
         bbsService.savePost(bbsVO, currentUserId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -79,8 +93,12 @@ public class BbsRestController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody BbsVO bbsVO) {
         String currentUserId = getCurrentUserId();
+        if (currentUserId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 401
+        }
+
         bbsVO.setPstSn(id);
-        boolean updated = bbsService.updatePost(bbsVO, currentUserId);  // ← userId 파라미터 추가
+        boolean updated = bbsService.updatePost(bbsVO, currentUserId);
 
         if(!updated) {
             // 권한 없음 또는 게시글 없음
@@ -93,13 +111,16 @@ public class BbsRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         String currentUserId = getCurrentUserId();
+        if (currentUserId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 401
+        }
         boolean deleted = bbsService.deletePost(id, currentUserId);  // ← userId 파라미터 추가
 
         if(!deleted) {
             // 권한 없음 또는 게시글 없음
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();  // 204
     }
 
 }

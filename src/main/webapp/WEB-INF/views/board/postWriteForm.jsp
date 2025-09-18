@@ -24,15 +24,10 @@
                 <textarea class="form-control" id="pstCn" name="pstCn" rows="5" required></textarea>
             </div>
 
-            <div class="row mb-3">
-                <div class="col">
-                    <label for="pblrNm" class="form-label">작성자</label>
-                    <input type="text" class="form-control" id="pblrNm" name="pblrNm" required>
-                </div>
-                <div class="col">
-                    <label for="pstPswd" class="form-label">패스워드</label>
-                    <input type="password" class="form-control" id="pstPswd" name="pstPswd" required>
-                </div>
+            <div class="mb-3">
+                <label for="pblrNm" class="form-label">작성자</label>
+                <input type="text" class="form-control" id="pblrNm" name="pblrNm" readonly
+                       style="background-color: #f8f9fa;">
             </div>
 
             <div class="d-flex justify-content-end mt-3">
