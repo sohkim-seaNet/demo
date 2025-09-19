@@ -6,6 +6,10 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+/**
+ * 게시판(BBS) 데이터 액세스 담당
+ * MyBatis Mapper 인터페이스
+ */
 @Mapper
 public interface BbsMapper {
 
@@ -16,17 +20,15 @@ public interface BbsMapper {
     void save(BbsVO bbs);
 
     /**
-     * 게시물 리스트 조회
-     * @return 게시물 리스트
+     * 게시물 목록 조회
+     * @return 게시물 목록
      */
     List<BbsVO> findAll();
 
-    // ===== 새로 추가: 페이징 + 검색 =====
-
     /**
-     * 검색 조건에 따른 게시물 페이징 조회
+     * 검색 조건과 페이징을 적용한 게시물 목록 조회
      * @param pageDTO - 검색 및 페이징 조건
-     * @return 게시물 리스트
+     * @return 게시물 목록 (페이징 적용)
      */
     List<BbsVO> searchPostsWithPaging(BbsPageDTO pageDTO);
 
@@ -39,7 +41,7 @@ public interface BbsMapper {
 
     /**
      * 게시물 상세정보 조회
-     * @param pstSn - 게시물일련번호
+     * @param pstSn - 게시물 일련번호
      * @return 게시물 상세정보
      */
     BbsVO findBySn(Long pstSn);
@@ -47,14 +49,14 @@ public interface BbsMapper {
     /**
      * 게시물 수정
      * @param bbs - 게시물 정보
-     * @return 게시물일련번호
+     * @return 영향받은 행의 수 (1: 성공, 0: 실패 또는 권한 없음)
      */
     int update(BbsVO bbs);
 
     /**
      * 게시물 삭제
      * @param pstSn - 게시물일련번호
-     * @return 게시물일련번호
+     * @return 영향받은 행의 수 (1: 성공, 0: 실패 또는 권한 없음)
      */
     int deleteBySn(Long pstSn);
 

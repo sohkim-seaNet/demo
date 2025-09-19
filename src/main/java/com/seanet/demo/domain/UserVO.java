@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * 사용자(User) 정보를 담는 Value Object (VO)
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

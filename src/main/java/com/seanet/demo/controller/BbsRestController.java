@@ -11,24 +11,26 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * 게시판 관련 REST API Controller
+ */
 @RestController
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
 public class BbsRestController {
 
     private final BbsService bbsService;
-    private final BbsMapper bbsMapper;
 
     /**
      * 현재 로그인 사용자 ID 조회 (내부용)
      */
     private String getCurrentUserId() {
+        // Spring Security SecurityContext에서 현재 로그인한 사용자의 ID를 조회
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // 비로그인 상태일때 null 반환
         if (authentication == null || !authentication.isAuthenticated() ||
                 authentication.getPrincipal().equals("anonymousUser")) {
             return null;
@@ -37,24 +39,24 @@ public class BbsRestController {
         return authentication.getName();
     }
 
-    //게시물 작성
+    // 게시물 작성
     @PostMapping("/")
     public ResponseEntity<Void> savePost(@RequestBody BbsVO bbsVO){
         String currentUserId = getCurrentUserId();
 
         if (currentUserId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 401
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // HTTP 401 Unauthorized
         }
 
         bbsService.savePost(bbsVO, currentUserId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();   // HTTP 201 Created
     }
 
-    // 게시물 리스트 조회
+    // 전체 게시물 목록 조회
     @GetMapping
     public ResponseEntity<List<BbsVO>> getAllPosts() {
         List<BbsVO> list = bbsService.findAllPost();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(list); // HTTP 200 OK
     }
 
     // 게시물 페이징 + 검색 조회
@@ -73,18 +75,18 @@ public class BbsRestController {
                 .searchKeyword(searchKeyword)
                 .build();
 
-        // 서비스 호출
+        // 서비스에서 페이징 및 검색 로직 처리
         BbsPageDTO result = bbsService.searchPostsWithPaging(pageDTO);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(result);   // HTTP 200 OK
     }
 
-    // 게시물 단건 조회
+    // 게시물 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<BbsVO> getPost(@PathVariable Long id) {
         BbsVO post = bbsService.findPostById(id);
         if(post == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();   // HTTP 404 Not Found
         }
         return ResponseEntity.ok(post);
     }
@@ -94,17 +96,18 @@ public class BbsRestController {
     public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody BbsVO bbsVO) {
         String currentUserId = getCurrentUserId();
         if (currentUserId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 401
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // HTTP 401 Unauthorized
         }
 
         bbsVO.setPstSn(id);
         boolean updated = bbsService.updatePost(bbsVO, currentUserId);
 
+        // 게시글이 없거나 작성자가 다른 경우
         if(!updated) {
-            // 권한 없음 또는 게시글 없음
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // HTTP 403 Forbidden
         }
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.noContent().build();  // HTTP 204 No Content
     }
 
     // 게시물 삭제
@@ -112,15 +115,17 @@ public class BbsRestController {
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         String currentUserId = getCurrentUserId();
         if (currentUserId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 401
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // HTTP 401 Unauthorized
         }
-        boolean deleted = bbsService.deletePost(id, currentUserId);  // ← userId 파라미터 추가
+        // Service에서 권한 검증과 함께 삭제 처리
+        boolean deleted = bbsService.deletePost(id, currentUserId);
 
+        // 게시글이 없거나 작성자가 다른 경우
         if(!deleted) {
-            // 권한 없음 또는 게시글 없음
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // HTTP 403 Forbidden
         }
-        return ResponseEntity.noContent().build();  // 204
+
+        return ResponseEntity.noContent().build();  // HTTP 204 No Content
     }
 
 }

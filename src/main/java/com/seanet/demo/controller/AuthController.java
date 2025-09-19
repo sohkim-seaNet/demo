@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 사용자 인증 정보를 처리하는 REST API Controller
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -21,7 +24,7 @@ public class AuthController {
     private final UserService userService;
 
     /**
-     * 현재 로그인한 사용자 정보 조회
+     * 현재 로그인한 사용자 상세 정보 조회
      */
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> getCurrentUserInfo() {
@@ -30,18 +33,17 @@ public class AuthController {
         Map<String, Object> response = new HashMap<>();
         response.put("isAuthenticated", currentUserId != null);
 
+        // 로그인한 사용자인 경우
         if (currentUserId != null) {
             response.put("userId", currentUserId);
-
-            // 닉네임 조회
             UserVO user = userService.findByUserId(currentUserId);
             response.put("nickname", user.getNickname());
         }
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response); // HTTP 200 OK
     }
 
     /**
-     * 로그인 상태만 간단 체크
+     * 현재 사용자의 로그인 상태 확인
      */
     @GetMapping("/status")
     public ResponseEntity<Map<String, Boolean>> getAuthStatus() {
@@ -50,15 +52,17 @@ public class AuthController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("isAuthenticated", isAuthenticated);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response); // HTTP 200 OK
     }
 
     /**
-     * 현재 로그인 사용자 ID 조회
+     * Spring Security의 SecurityContext에서
+     * 현재 로그인한 사용자의 ID 조회
      */
     private String getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // 인증 정보가 없거나, 인증되지 않았거나, 익명 사용자인 경우 null 반환
         if (authentication == null || !authentication.isAuthenticated() ||
                 authentication.getPrincipal().equals("anonymousUser")) {
             return null;

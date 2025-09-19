@@ -11,7 +11,7 @@
             </ul>
 
             <ul class="navbar-nav">
-                <!-- 로그인 안 한 상태 -->
+                <%-- 로그인 안 한 상태 --%>
                 <sec:authorize access="isAnonymous()">
                     <li class="nav-item">
                         <a class="nav-link" href="/user/login">로그인</a>
@@ -21,7 +21,7 @@
                     </li>
                 </sec:authorize>
 
-                <!-- 로그인 한 상태 -->
+                <%-- 로그인 한 상태 --%>
                 <sec:authorize access="isAuthenticated()">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">

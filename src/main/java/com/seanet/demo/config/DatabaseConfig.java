@@ -14,6 +14,9 @@ import org.springframework.context.annotation.PropertySource;
 
 import javax.sql.DataSource;
 
+/**
+ * 데이터베이스 연결 및 MyBatis 설정
+ */
 @Configuration
 @PropertySource("classpath:/application.properties")
 public class DatabaseConfig {
@@ -21,17 +24,26 @@ public class DatabaseConfig {
     @Autowired
     private ApplicationContext context;
 
+    /**
+     * HikariCP 커넥션 풀 설정 Bean
+     */
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.hikari")
     public HikariConfig hikariConfig() {
         return new HikariConfig();
     }
 
+    /**
+     * HikariCP DataSource Bean 생성
+     */
     @Bean
     public DataSource dataSource() {
         return new HikariDataSource(hikariConfig());
     }
 
+    /**
+     * MyBatis SqlSessionFactory Bean 생성
+     */
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
@@ -41,11 +53,18 @@ public class DatabaseConfig {
         return factoryBean.getObject();
     }
 
+    /**
+     * MyBatis SqlSessionTemplate Bean 생성
+     */
     @Bean
     public SqlSessionTemplate sqlSession() throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory());
     }
 
+    /**
+     * MyBatis Configuration Bean
+     * application.properties의 mybatis.configuration.* 설정을 자동으로 바인딩
+     */
     @Bean
     @ConfigurationProperties(prefix = "mybatis.configuration")
     public org.apache.ibatis.session.Configuration mybatisConfig() {

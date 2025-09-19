@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 사용자 관련 비즈니스 로직 처리
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -17,7 +20,7 @@ public class UserService {
     /**
      * 회원가입
      * @param userVO - 사용자 정보
-     * @return 성공 여부
+     * @return boolean [true: 회원가입 성공, false: 실패]
      */
     @Transactional
     public boolean registerUser(UserVO userVO) {
@@ -31,7 +34,7 @@ public class UserService {
 
     /**
      * 사용자 조회 (로그인용)
-     * @param userId - 사용자 ID
+     * @param userId - 사용자 ID (로그인 ID)
      * @return 사용자 정보
      */
     public UserVO findByUserId(String userId) {
@@ -41,7 +44,7 @@ public class UserService {
     /**
      * 아이디 중복 확인
      * @param userId - 사용자 ID
-     * @return 중복 여부
+     * @return boolean [true: 이미 사용 중, false: 사용 가능]
      */
     public boolean isUserIdExists(String userId) {
         return userMapper.countByUserId(userId) > 0;
@@ -50,16 +53,16 @@ public class UserService {
     /**
      * 닉네임 중복 확인
      * @param nickname - 닉네임
-     * @return 중복 여부
+     * @return boolean [true: 이미 사용 중, false: 사용 가능]
      */
     public boolean isNicknameExists(String nickname) {
         return userMapper.countByNickname(nickname) > 0;
     }
 
     /**
-     * 사용자 정보 수정 (닉네임, 이메일만)
+     * 사용자 정보 수정
      * @param userVO - 수정할 사용자 정보
-     * @return 성공 여부
+     * @return boolean [true: 수정 성공, false: 실패]
      */
     @Transactional
     public boolean updateUser(UserVO userVO) {

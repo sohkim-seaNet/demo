@@ -4,6 +4,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * 게시글(BBS) 정보를 담는 VO
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

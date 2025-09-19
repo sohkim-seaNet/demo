@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * 사용자 관련 REST API Controller
+ */
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -24,7 +27,7 @@ public class UserRestController {
     public ResponseEntity<Boolean> checkUserId(@RequestBody Map<String, String> request) {
         String userId = request.get("userId");
         boolean exists = userService.isUserIdExists(userId);
-        return ResponseEntity.ok(exists);
+        return ResponseEntity.ok(exists);   // HTTP 200 OK
     }
 
     // 닉네임 중복확인
@@ -32,27 +35,28 @@ public class UserRestController {
     public ResponseEntity<Boolean> checkNickname(@RequestBody Map<String, String> request) {
         String nickname = request.get("nickname");
         boolean exists = userService.isNicknameExists(nickname);
-        return ResponseEntity.ok(exists);
+        return ResponseEntity.ok(exists);   // HTTP 200 OK
     }
 
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserVO userVO) {
         try {
-            // AuthService에서 비밀번호 암호화
+            // 1. AuthService에서 비밀번호 암호화
             String encodedPassword = authService.encodePassword(userVO.getUserPwd());
             userVO.setUserPwd(encodedPassword);
 
-            // UserService에서 사용자 저장
+            // 2. UserService에서 사용자 저장
             boolean success = userService.registerUser(userVO);
 
             if (success) {
-                return ResponseEntity.ok().build();
+                return ResponseEntity.ok().build(); // HTTP 200 OK
             } else {
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest().build(); // HTTP 400 Bad Request
             }
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            // 서버 오류 (DB 연결 실패, 암호화 오류 등)
+            return ResponseEntity.internalServerError().build(); // HTTP 500 Internal Server Error
         }
     }
 }
