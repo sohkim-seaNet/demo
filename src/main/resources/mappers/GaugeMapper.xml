@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seanet.demo.mappers.GaugeMapper">
+
+    <!-- 계기판 설정 조회 -->
+    <select id="selectGauge" parameterType="string" resultType="com.seanet.demo.domain.GaugeVO">
+        SELECT
+            GAUGE_ID AS gaugeId,
+            GAUGE_NM AS gaugeName,
+            MIN_VALUE AS minValue,
+            MAX_VALUE AS maxValue,
+            MIN_ANGLE AS minAngle,
+            MAX_ANGLE AS maxAngle,
+            REG_DT AS regDt
+        FROM TBL_GAUGE
+        WHERE GAUGE_ID = #{gaugeId}
+    </select>
+
+</mapper>

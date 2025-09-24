@@ -8,6 +8,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">홈</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/board/list">게시판</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/animation/1">애니메이션1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/animation/2">애니메이션2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/animation/3">애니메이션3</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/animation/4">애니메이션4</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/animation/5">애니메이션5</a>
+                </li>
             </ul>
 
             <ul class="navbar-nav">

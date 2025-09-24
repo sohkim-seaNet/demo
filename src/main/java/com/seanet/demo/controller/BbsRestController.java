@@ -2,7 +2,6 @@ package com.seanet.demo.controller;
 
 import com.seanet.demo.domain.BbsPageDTO;
 import com.seanet.demo.domain.BbsVO;
-import com.seanet.demo.mappers.BbsMapper;
 import com.seanet.demo.service.BbsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

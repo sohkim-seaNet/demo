@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -54,7 +53,7 @@ public class SecurityConfig {
 
                 .authorizeRequests()
                 // 메인 페이지, 게시판 목록, 게시글 API는 누구나 접근 가능
-                .antMatchers("/", "/board/list", "/api/post/**").permitAll()
+                .antMatchers("/", "/board/list", "/api/post/**", "/animation/**").permitAll()
                 // 로그인, 회원가입, 사용자 API는 누구나 접근 가능
                 .antMatchers("/user/login", "/user/signup", "/api/user/**").permitAll()
                 // 위에서 명시하지 않은 모든 요청은 인증이 필요

@@ -1,0 +1,63 @@
+/* 게이지와 바늘을 담는 컨테이너 */
+.gauge-container {
+    /* 자식 요소(바늘)가 absolute 포지션을 가질 때의 기준점 역할을 함 */
+    position: relative;
+
+    /* 게이지 이미지의 크기에 맞춰 너비 설정 (정확한 정렬을 위해) */
+    width: 434px;
+}
+
+/* 배경 게이지 이미지 스타일 */
+.gauge-background {
+    /* 컨테이너 너비에 꽉 차게 표시 */
+    width: 100%;
+
+    /* 이미지가 깨지지 않도록 display: block 처리 */
+    display: block;
+}
+
+/* 바늘 이미지 스타일 */
+.gauge-needle {
+    /* 1. 부모(.gauge-container)를 기준으로 위치를 잡기 위해 absolute 설정 */
+    position: absolute;
+
+    /* 2. 컨테이너의 가로 중앙으로 이동 */
+    left: 50%;
+
+    /* 3. 바늘의 파란 원이 게이지 중심에 오도록 아래쪽(bottom)을 기준으로 위치 조정 */
+    bottom: 24%;
+
+    /* 4. left: 50%로 인해 왼쪽으로 쏠린 것을 이미지 너비의 절반만큼 다시 왼쪽으로 당겨와 완벽한 가로 중앙 정렬 완성 */
+    transform: translateX(-50%);
+
+    /* 5. 바늘 이미지의 크기 조절 */
+    /* 이 값을 조절하여 바늘의 크기를 변경 */
+    width: 18%;
+
+    /* [추가] 회전 중심축을 x축 50%(중앙), y축 85%(아래에서 약간 위)로 지정 */
+    transform-origin: 50% 85%;
+
+    transition: transform 0.5s ease;
+}
+
+/* [추가] 컨트롤러 UI 스타일 */
+.controller {
+    margin-top: 20px; /* 게이지와 간격 띄우기 */
+    display: flex;
+    gap: 10px; /* 입력창과 버튼 사이 간격 */
+}
+
+.controller input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.controller button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
