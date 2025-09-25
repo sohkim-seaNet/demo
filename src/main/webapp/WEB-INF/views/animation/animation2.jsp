@@ -44,6 +44,7 @@
         </svg>
     </div>
     <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/animation/gaugeUtils.js"></script>
     <script src="/js/animation/animation2.js"></script>
 </body>
 </html>

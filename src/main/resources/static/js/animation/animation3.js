@@ -1,26 +1,44 @@
-let currentAngle = 0;
+// ==================== 설정 상수 ====================
+const DEFAULT_CONFIG = { minValue: 0, maxValue: 360, minAngle: 0, maxAngle: 360 };
+const API_ENDPOINT = '/api/animation/GYRO';
 
-document.addEventListener('DOMContentLoaded', function() {
+// ==================== 전역 변수 ====================
+let gaugeConfig = null;
+
+/**
+ * Gyro 게이지 각도 업데이트 함수
+ */
+function updateAngle(inputValue) {
+
+    const angle = valueToAngle(inputValue, gaugeConfig);
+
+    // DOM 요소들 참조
     const rotatableGroup = document.querySelector('.rotatable-group');
     const angleText = document.querySelector('.b09d5a79-aa13-4213-821d-9a021bfbf0bd');
-    const angleInput = document.getElementById('angleInput');
-    const btn = document.getElementById('rotateBtn');
 
-    btn.addEventListener('click', function() {
-        const inputValue = parseFloat(angleInput.value);
-        currentAngle = Math.round(inputValue * 100) / 100;
+    // 회전 그룹에 음수 각도 적용 (시계 반대 방향)
+    rotatableGroup.style.transform = `rotate(${-angle}deg)`;
 
-        // 회전할 그룹만 회전
-        rotatableGroup.style.transform = `rotate(${-currentAngle}deg)`;
+    // 화면에 표시될 각도 텍스트 업데이트
+    angleText.textContent = angle + '°';
+}
 
-        // 텍스트 내용만 업데이트
-        angleText.textContent = currentAngle.toFixed(2) + '°';
-        angleInput.value = currentAngle.toFixed(2);
-    });
+/**
+ * 페이지 로딩 완료 시 Gyro 게이지 초기화 실행
+ */
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        // 게이지 설정 정보 로드
+        gaugeConfig = await loadGaugeConfig(API_ENDPOINT, DEFAULT_CONFIG);
 
-    angleInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            btn.click();
-        }
-    });
+        // 초기 각도를 0도로 설정
+        updateAngle(gaugeConfig.minValue);
+
+        // 입력 이벤트 리스너 등록 (입력창, 버튼, Enter 키)
+        setupGaugeEvents('#angleInput', '#rotateBtn', updateAngle);
+
+        console.log('[Gyro] 게이지 초기화 완료');
+    } catch (error) {
+        console.error('[Gyro] 초기화 실패:', error);
+    }
 });

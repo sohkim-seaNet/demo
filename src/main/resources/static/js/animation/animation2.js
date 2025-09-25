@@ -1,54 +1,38 @@
-// 전역 변수
+// ==================== 설정 상수 ====================
+const DEFAULT_CONFIG = { minValue: 0, maxValue: 800, minAngle: -90, maxAngle: 90 };
+const API_ENDPOINT = '/api/animation/THRUSTER_GAUGE';
+
+// ==================== 전역 변수 ====================
 let gaugeConfig = null;
 const needle = document.getElementById('needle');
-const valueInput = document.getElementById('valueInput');
-const updateButton = document.getElementById('updateButton');
 
-// 페이지 로딩 시 실행
-document.addEventListener('DOMContentLoaded', async function() {
-    // DB에서 게이지 정보 가져오기
-    try {
-        const response = await fetch('/api/animation/THRUSTER_GAUGE');
-        const data = await response.json();
-        console.log(data);
-
-        gaugeConfig = {
-            minValue: parseFloat(data.minValue),
-            maxValue: parseFloat(data.maxValue),
-            minAngle: parseFloat(data.minAngle),
-            maxAngle: parseFloat(data.maxAngle)
-        };
-    } catch (error) {
-        // 기본값 사용
-        gaugeConfig = { minValue: 0, maxValue: 800, minAngle: -90, maxAngle: 90 };
-    }
-
-    // 초기 설정
-    needle.style.transformOrigin = '299.14px 261.73px';
-    updateGauge(gaugeConfig.minValue);
-});
-
-// 계기판 업데이트 함수
+/**
+ * SVG 게이지 바늘 회전 함수
+ */
 function updateGauge(value) {
-    const MIN_VALUE = gaugeConfig.minValue;
-    const MAX_VALUE = gaugeConfig.maxValue;
-    const MIN_ANGLE = gaugeConfig.minAngle;
-    const MAX_ANGLE = gaugeConfig.maxAngle;
-
-    const clampedValue = Math.max(MIN_VALUE, Math.min(value, MAX_VALUE));
-    const angle = ((clampedValue - MIN_VALUE) / (MAX_VALUE - MIN_VALUE)) * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE;
-
+    const angle = valueToAngle(value, gaugeConfig);
     needle.style.transform = `rotate(${angle}deg)`;
 }
 
-// 이벤트 리스너
-updateButton.addEventListener('click', () => {
-    const value = parseFloat(valueInput.value) || 0;
-    updateGauge(value);
-});
+/**
+ * 페이지 로딩 완료 시 Thruster 게이지 초기화 실행
+ */
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        // 게이지 설정 정보 로드
+        gaugeConfig = await loadGaugeConfig(API_ENDPOINT, DEFAULT_CONFIG);
 
-valueInput.addEventListener('keyup', (event) => {
-    if (event.key === 'Enter') {
-        updateButton.click();
+        // SVG 바늘의 회전 중심점 설정 (SVG 좌표계 기준)
+        needle.style.transformOrigin = '299.14px 261.73px';
+
+        // 초기값을 최소값(0)으로 설정
+        updateGauge(gaugeConfig.minValue);
+
+        // 입력 이벤트 리스너 등록
+        setupGaugeEvents('#valueInput', '#updateButton', updateGauge);
+
+        console.log('[Thruster] 게이지 초기화 완료');
+    } catch (error) {
+        console.error('[Thruster] 초기화 실패:', error);
     }
 });

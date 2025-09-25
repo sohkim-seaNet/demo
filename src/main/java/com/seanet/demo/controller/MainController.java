@@ -31,7 +31,7 @@ public class MainController {
 
     @GetMapping("animation/4")
     public String animation4() {
-        return "animation/animaion4";
+        return "animation/animation4";
     }
 
     @GetMapping("animation/5")

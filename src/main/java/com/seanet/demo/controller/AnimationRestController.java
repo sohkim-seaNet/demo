@@ -4,18 +4,18 @@ import com.seanet.demo.domain.GaugeVO;
 import com.seanet.demo.service.GaugeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 
 /**
  * 애니메이션 관련 Controller
  */
-@Controller
-@RequestMapping("api/animation")
+@RestController
+@RequestMapping("/api/animation")
 @RequiredArgsConstructor
 public class AnimationRestController {
 

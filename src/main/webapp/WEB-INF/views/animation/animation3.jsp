@@ -167,21 +167,24 @@
                     </g>
                 </g>
             </g>
-            <text class="b09d5a79-aa13-4213-821d-9a021bfbf0bd" id="angleText" transform="translate(163.93 345.92)">360.00˚</text>
+            <text class="b09d5a79-aa13-4213-821d-9a021bfbf0bd" id="angleText"
+                  x="330" y="325"
+                  text-anchor="middle"
+                  dominant-baseline="middle">360.00°</text>
             <path class="f7ffb0ad-ea22-48d0-ba54-45aac392ff04" d="M312.05,134.32,294.32,165a.73.73,0,0,0,.63,1.1h35.46a.73.73,0,0,0,.64-1.1l-17.73-30.71A.73.73,0,0,0,312.05,134.32Z"/>
         </svg>
 
         <div class="text-center mt-3">
             <div class="input-group justify-content-center" style="max-width: 300px; margin: 0 auto;">
                 <input type="number" id="angleInput" class="form-control" placeholder="각도 입력 (0-360)"
-                       min="0" max="360" step="0.01" value="0.00">
-                <button id="rotateBtn" class="btn btn-primary">회전</button>
+                       min="0" max="360">
+                <button id="rotateBtn" class="btn btn-primary">적용</button>
             </div>
-            <small class="text-muted">소수 둘째자리까지 입력 가능 (예: 45.67)</small>
         </div>
 
     </div>
     <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/animation/gaugeUtils.js"></script>
     <script src="/js/animation/animation3.js"></script>
 </body>
 </html>
