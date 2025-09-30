@@ -138,6 +138,10 @@
             </g>
         </svg>
     </div>
+    <!-- SockJS 클라이언트 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <!-- STOMP 클라이언트 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/animation/gaugeUtils.js"></script>
     <script src="/js/animation/animation5.js"></script>
