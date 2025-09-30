@@ -1,4 +1,4 @@
-package com.seanet.demo.mappers;
+package com.seanet.demo.mappers.main;
 
 import com.seanet.demo.domain.GaugeVO;
 import org.apache.ibatis.annotations.Mapper;

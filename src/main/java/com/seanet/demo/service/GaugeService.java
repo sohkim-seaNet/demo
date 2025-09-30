@@ -1,7 +1,7 @@
 package com.seanet.demo.service;
 
 import com.seanet.demo.domain.GaugeVO;
-import com.seanet.demo.mappers.GaugeMapper;
+import com.seanet.demo.mappers.main.GaugeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,6 @@ public class GaugeService {
     public GaugeVO getGaugeConfig(String gaugeId) {
         return gaugeMapper.selectGauge(gaugeId);
     }
-
-
-
 
 
 }

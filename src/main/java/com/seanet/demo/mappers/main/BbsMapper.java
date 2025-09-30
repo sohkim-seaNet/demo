@@ -1,4 +1,4 @@
-package com.seanet.demo.mappers;
+package com.seanet.demo.mappers.main;
 
 import com.seanet.demo.domain.BbsPageDTO;
 import com.seanet.demo.domain.BbsVO;

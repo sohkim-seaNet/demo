@@ -3,9 +3,8 @@ package com.seanet.demo.service;
 import com.seanet.demo.domain.BbsPageDTO;
 import com.seanet.demo.domain.BbsVO;
 import com.seanet.demo.domain.UserVO;
-import com.seanet.demo.mappers.BbsMapper;
+import com.seanet.demo.mappers.main.BbsMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

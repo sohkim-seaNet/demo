@@ -4,7 +4,7 @@
 <!--
     사용자(User) 관련 SQL 매핑 정의
 -->
-<mapper namespace="com.seanet.demo.mappers.UserMapper">
+<mapper namespace="com.seanet.demo.mappers.main.UserMapper">
 
     <!-- 사용자 등록 (회원가입) -->
     <insert id="save" parameterType="com.seanet.demo.domain.UserVO">

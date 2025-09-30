@@ -1,7 +1,7 @@
 package com.seanet.demo.service;
 
 import com.seanet.demo.domain.UserVO;
-import com.seanet.demo.mappers.UserMapper;
+import com.seanet.demo.mappers.main.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

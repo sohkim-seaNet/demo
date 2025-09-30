@@ -4,7 +4,7 @@
 <!--
     게시판(BBS) 관련 SQL 매핑 정의
 -->
-<mapper namespace="com.seanet.demo.mappers.BbsMapper">
+<mapper namespace="com.seanet.demo.mappers.main.BbsMapper">
 
     <!-- 게시글 저장 -->
     <insert id="save" parameterType="com.seanet.demo.domain.BbsVO">
