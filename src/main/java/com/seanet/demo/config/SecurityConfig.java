@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .and()
 
                 .authorizeRequests()
+                .antMatchers("/subscribe").permitAll()
                 // 메인 페이지, 게시판 목록, 게시글 API는 누구나 접근 가능
                 .antMatchers("/", "/board/list", "/api/post/**", "/animation/**", "/api/animation/**").permitAll()
                 // 로그인, 회원가입, 사용자 API는 누구나 접근 가능
@@ -79,4 +80,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-
