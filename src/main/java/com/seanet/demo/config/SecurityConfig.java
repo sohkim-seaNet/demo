@@ -46,12 +46,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors().disable()
+                .cors()
+                .and()
                 .csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
 
                 .authorizeRequests()
+                .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/subscribe").permitAll()
                 // 메인 페이지, 게시판 목록, 게시글 API는 누구나 접근 가능
                 .antMatchers("/", "/board/list", "/api/post/**", "/animation/**", "/api/animation/**").permitAll()
