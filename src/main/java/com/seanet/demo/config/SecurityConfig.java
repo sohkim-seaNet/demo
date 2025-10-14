@@ -55,28 +55,54 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/subscribe").permitAll()
-                // 메인 페이지, 게시판 목록, 게시글 API는 누구나 접근 가능
                 .antMatchers("/", "/board/list", "/api/post/**", "/animation/**", "/api/animation/**").permitAll()
-                // 로그인, 회원가입, 사용자 API는 누구나 접근 가능
                 .antMatchers("/user/login", "/user/signup", "/api/user/**").permitAll()
-                // 위에서 명시하지 않은 모든 요청은 인증이 필요
                 .anyRequest().authenticated()
                 .and()
 
                 .formLogin()
-                .loginPage("/user/login")   // 커스텀 로그인 페이지 URL
-                .loginProcessingUrl("/login") // 로그인 처리 URL (POST 요청)
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/user/login?error=true")
+                .loginPage("/user/login")
+                .loginProcessingUrl("/login")
+                // 성공 시 JSON 응답
+                .successHandler((request, response, authentication) -> {
+                    response.setStatus(200);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"success\":true}");
+                })
+                // 실패 시 JSON 응답
+                .failureHandler((request, response, exception) -> {
+                    response.setStatus(401);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"success\":false,\"message\":\"아이디 또는 비밀번호가 잘못되었습니다.\"}");
+                })
                 .permitAll()
                 .and()
 
                 .logout()
-                .logoutSuccessUrl("/")
+                .logoutUrl("/logout")  // POST /logout
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    // 로그아웃 성공 시 JSON 응답
+                    response.setStatus(200);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"success\":true}");
+                })
                 .permitAll()
                 .and()
 
-                // 사용자 정보 로딩 서비스 설정
+                .exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) -> {
+                    // /api 로 시작하는 요청은 JSON 응답
+                    if (request.getRequestURI().startsWith("/api")) {
+                        response.setStatus(401);
+                        response.setContentType("application/json;charset=UTF-8");
+                        response.getWriter().write("{\"isAuthenticated\":false}");
+                    } else {
+                        // 일반 페이지는 로그인 페이지로 리다이렉트
+                        response.sendRedirect("/user/login");
+                    }
+                })
+                .and()
+
                 .userDetailsService(authService);
 
         return http.build();

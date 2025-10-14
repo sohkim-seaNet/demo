@@ -10,7 +10,7 @@ function useAuth() {
 
     const checkAuth = async () => {
         try {
-            const response = await fetch('api/auth/me',{
+            const response = await fetch('/api/auth/me',{
                 credentials: 'include'  // 세션 쿠키 포함
             });
 

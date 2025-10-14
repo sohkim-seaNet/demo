@@ -1,3 +1,4 @@
+// src/components/layout/Header.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
@@ -7,13 +8,20 @@ function Header() {
 
     const handleLogout = async () => {
         try {
-            await fetch('/logout', {
-               method: 'POST',
-               credentials: 'include'
+            const response = await fetch('/logout', {
+                method: 'POST',
+                credentials: 'include'
             });
-            window.location.href = "/";
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = '/';
+            }
         } catch (error) {
-            console.error('로그아웃 실패: ', error);
+            console.error('로그아웃 실패:', error);
+            // 실패해도 메인으로 이동
+            window.location.href = '/';
         }
     };
 

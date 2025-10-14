@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { showAlert } from '../../components/common/AlertModal';
+import { useNavigate } from 'react-router-dom';
 
 function PostList() {
+
+    const navigate = useNavigate();
 
     // 검색 관련 상태 관리
     const [searchType, setSearchType] = useState('title');
@@ -59,6 +63,7 @@ function PostList() {
         } catch (error) {
             console.error('게시물 로드 실패:', error);
             setError('게시물을 불러오는 데 실패했습니다.');
+            showAlert('게시물을 불러오는 데 실패했습니다.', 'Error');
         } finally {
             setLoading(false);
         }
@@ -242,7 +247,12 @@ function PostList() {
 
             {/* 글 작성 버튼 */}
             <div className="d-flex justify-content-end mt-3 mb-5">
-                <a href="/board/write" className="btn btn-primary">글 작성</a>
+                <button
+                    className="btn btn-primary"
+                    onClick={() => navigate('/board/write')}
+                >
+                    글 작성
+                </button>
             </div>
 
             {/* 페이징 */}
