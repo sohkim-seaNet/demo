@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    smartship_db SQL 매핑 정의
+-->
 <mapper namespace="com.seanet.demo.mappers.sub.DummyMapper">
 
+    <!--  TB_Telegraph : 가장 최근에 저장된 _order 값 조회 -->
     <select id="findLatestTelegraphOrder" resultType="java.lang.Integer">
         SELECT TOP 1 _order
         FROM TB_Telegraph

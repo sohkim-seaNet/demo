@@ -1,6 +1,14 @@
+/**
+ * Telegraph 애니메이션 스크립트
+ *
+ * SSE를 통해 서버로부터 실시간으로 Telegraph 위치 데이터를 받아
+ * 바늘을 수직 이동시키는 기능 구현
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1) 각 위치별 Y 오프셋만 정의
+    // ==================== 설정 상수 ====================
+    // 각 위치 코드별 Y축 이동 거리 (px)
     const TELEGRAPH_Y = {
         "5":   -280,
         "4":   -228,
@@ -16,8 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     /**
-     * 2) 텔레그래프 바늘을 특정 위치로 이동시키는 함수
-     * @param {string} pos - 서버로부터 받은 위치 코드 (예: "5", "11")
+     * Telegraph 바늘 수직 이동 함수
+     *
+     * @param {string} pos - 위치 코드
      */
     function moveTelegraphVertical(pos) {
         const needle = document.getElementById('needle');
@@ -26,16 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * 3) SSE(Server-Sent Events) 연결을 설정하고 서버로부터 오는 이벤트를 처리
-     * SSE는 별도의 라이브러리 없이 브라우저에 내장된 'EventSource' API를 사용
+     * SSE 연결 설정 및 실시간 데이터 수신
+     *
+     * EventSource API를 사용하여 서버의 '/subscribe' 엔드포인트에 연결
+     * 서버가 'telegraph-update' 이벤트를 보낼 때마다 바늘을 업데이트
      */
 
-    // 3-1) EventSource 객체 생성 및 서버에 구독 요청
-    // 이 코드가 실행되는 즉시, 브라우저는 서버의 '/subscribe' 주소로 연결을 시도
+    // 1. SSE 연결 생성 (/subscribe 엔드포인트)
     const eventSource = new EventSource('/subscribe');
 
-    // 3-2) 'telegraph-update' 이벤트 리스너 등록
-    // 서버가 'telegraph-update'라는 이름으로 이벤트를 보낼 때마다 이 함수가 실행
+    // 2. 'telegraph-update' 이벤트 리스너 등록
+    // 서버에서 새로운 Telegraph 위치가 전송될 때마다 실행
     eventSource.addEventListener('telegraph-update', function(event) {
         // event.data에 서버가 보낸 실제 데이터(텔레그래프 위치 코드)가 담겨 있음
         const newPosition = event.data;
@@ -45,12 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
         moveTelegraphVertical(newPosition);
     });
 
-    // 연결이 처음 성공했을 때 발생하는 'open' 이벤트 처리
+    // 3. 연결 성공 이벤트
     eventSource.onopen = function(event) {
         console.log("SSE 연결 성공!");
     };
 
-    // 에러 발생 시 이벤트 처리
+    // 4. 에러 처리
     eventSource.onerror = function(error) {
         console.error("EventSource 에러 발생:", error);
     };

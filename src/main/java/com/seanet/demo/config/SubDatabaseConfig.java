@@ -14,6 +14,13 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
+/**
+ * Sub 데이터베이스 연결 설정 클래스
+ *
+ * 연결 정보:
+ * - 데이터베이스: SQL Server (192.168.7.123:10000)
+ * - 스키마명: smartship_db
+ */
 @Configuration
 @MapperScan(
         basePackages = "com.seanet.demo.mappers.sub",
@@ -23,8 +30,8 @@ import javax.sql.DataSource;
 public class SubDatabaseConfig {
 
     /**
-     * sub 데이터베이스용 HikariCP 설정 Bean
-     * application.properties의 'sub.datasource.hikari' 설정을 가져옵니다.
+     * Sub 데이터베이스용 HikariCP 설정 Bean 생성
+     * application.properties의 'sub.datasource.hikari' 속성을 자동으로 바인딩
      */
     @Bean(name = "subHikariConfig")
     @ConfigurationProperties(prefix = "sub.datasource.hikari")
@@ -33,7 +40,7 @@ public class SubDatabaseConfig {
     }
 
     /**
-     * sub 데이터베이스용 DataSource Bean
+     * sub 데이터베이스용 DataSource Bean 생성
      */
     @Bean(name = "subDataSource")
     public DataSource subDataSource() {
@@ -41,16 +48,18 @@ public class SubDatabaseConfig {
     }
 
     /**
-     * sub 데이터베이스용 SqlSessionFactory Bean
+     * sub 데이터베이스용 SqlSessionFactory Bean 생성
      */
     @Bean(name = "subSqlSessionFactory")
     public SqlSessionFactory subSqlSessionFactory(@Qualifier("subDataSource") DataSource subDataSource,
                                                   ApplicationContext applicationContext) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+        // 1. Sub 데이터소스 설정 (192.168.7.123:10000/smartship_db)
         factoryBean.setDataSource(subDataSource);
+        // 2. MyBatis Mapper XML 파일 위치 지정
         factoryBean.setMapperLocations(applicationContext.getResources("classpath*:mappers/sub/**/*.xml"));
 
-        // Configuration 객체를 여기서 직접 생성하고 설정
+        // 3. MyBatis Configuration 설정
         org.apache.ibatis.session.Configuration config = new org.apache.ibatis.session.Configuration();
         config.setMapUnderscoreToCamelCase(true); // 프로퍼티 설정을 코드로 직접 반영
         factoryBean.setConfiguration(config);
@@ -59,7 +68,8 @@ public class SubDatabaseConfig {
     }
 
     /**
-     * sub 데이터베이스용 SqlSessionTemplate Bean
+     * sub 데이터베이스용 SqlSessionTemplate Bean 생성
+     * MyBatis SQL 실행을 위한 템플릿 객체
      */
     @Bean(name = "subSqlSessionTemplate")
     public SqlSessionTemplate subSqlSessionTemplate(@Qualifier("subSqlSessionFactory") SqlSessionFactory subSqlSessionFactory) {

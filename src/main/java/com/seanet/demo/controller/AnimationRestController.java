@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 
 /**
- * 애니메이션 관련 Controller
+ * 애니메이션 관련 REST API Controller
+ * 계기판(Gauge) 설정 정보 제공
  */
-@RestController
+ @RestController
 @RequestMapping("/api/animation")
 @RequiredArgsConstructor
 public class AnimationRestController {
@@ -22,18 +23,20 @@ public class AnimationRestController {
     private final GaugeService gaugeService;
 
     /**
-     * 계기판 조회
+     * 특정 계기판의 설정 정보 조회
      * @param gaugeId 계기판 ID
-     * @return 계기판 설정 정보
+     * @return ResponseEntity<GaugeVO> 계기판 설정 정보
      */
     @GetMapping("/{gaugeId}")
     public ResponseEntity<GaugeVO> getGaugeConfig(@PathVariable String gaugeId) {
+        // 1. 데이터베이스에서 계기판 설정 조회
         GaugeVO gaugeConfig = gaugeService.getGaugeConfig(gaugeId);
 
         if (gaugeConfig != null) {
+            // 2-1. 데이터가 존재하면 조회된 설정값 반환
             return ResponseEntity.ok(gaugeConfig);  // HTTP 200 OK
         } else {
-            // 기본값으로 응답
+            // 2-2. 데이터가 없으면 기본 설정값 생성 후 반환
             GaugeVO defaultConfig = GaugeVO.builder()
                     .gaugeId(gaugeId)
                     .gaugeNm("기본 계기판")

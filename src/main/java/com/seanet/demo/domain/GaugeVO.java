@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-/*
- * 계기판 정보를 담는 VO
+/**
+ * 계기판(GAUGE) 정보를 담는 VO
  */
 @Data
 @NoArgsConstructor
