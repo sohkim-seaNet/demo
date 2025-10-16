@@ -1,3 +1,10 @@
+/**
+ * PostList/index.jsx - 게시글 목록 페이지
+ * - 게시글 목록 조회 및 검색
+ * - 페이징 처리
+ */
+
+
 import React, { useState, useEffect } from 'react';
 import { showAlert } from '../../components/common/AlertModal';
 import { useNavigate } from 'react-router-dom';
@@ -6,24 +13,27 @@ function PostList() {
 
     const navigate = useNavigate();
 
-    // 검색 관련 상태 관리
+    // [상태 관리] 검색 조건
     const [searchType, setSearchType] = useState('title');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
-    // 게시글 데이터 상태
+    // [상태 관리] 게시글 데이터
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // 페이징 정보
+    // [상태 관리] 페이징 정보
     const [pageData, setPageData] = useState({
-        totalPages: 0,
-        hasNext: false,
-        hasPrevious: false
+        totalPages: 0,      // 전체 페이지 수
+        hasNext: false,     // 다음 페이지 존재 여부
+        hasPrevious: false  // 이전 페이지 존재 여부
     });
 
-    // 게시글 목록 로드 함수
+    /**
+     * loadPosts - 서버에서 게시글 목록 가져오기
+     * - 검색 조건과 페이지 번호에 따라 데이터 조회
+     */
     const loadPosts = async () => {
         try {
             setLoading(true);
@@ -51,7 +61,7 @@ function PostList() {
             const data = await response.json();
             console.log('API 응답:', data);
 
-            // 상태 업데이트
+            // 게시글 목록 저장
             setPosts(data.content);
 
             // 페이징 정보 저장
@@ -73,31 +83,36 @@ function PostList() {
         loadPosts();
     }, [currentPage]);
 
-    // 검색 버튼 클릭 핸들러
+    // [이벤트 핸들러] 검색 버튼 클릭
     const handleSearch = () => {
         setCurrentPage(1);  // 검색 시 첫 페이지로
         loadPosts();
     };
 
-    // Enter 키 이벤트 핸들러
+    // [이벤트 핸들러] Enter 키 입력 시 검색
     const handleKeyPress = (e) => {
         if(e.key === 'Enter') {
             handleSearch();
         }
     };
 
-    // 페이지 이동 함수
+    // [페이징] 특정 페이지로 이동
     const goToPage = (page) => {
         setCurrentPage(page);
     };
 
-    // 페이징 버튼 렌더링
+    /**
+     * renderPagination - 페이징 버튼 렌더링
+     * - 현재 페이지 기준으로 최대 5개 버튼 표시
+     * - 이전/다음 버튼 포함
+     */
     const renderPagination = () => {
         if (pageData.totalPages <= 1) return null;
 
         const maxButtons = 5;
         let startPage, endPage;
 
+        // 페이지 버튼 범위 계산
         if (pageData.totalPages <= maxButtons) {
             startPage = 1;
             endPage = pageData.totalPages;
@@ -115,6 +130,7 @@ function PostList() {
             }
         }
 
+        // 페이지 번호 버튼 생성
         const pages = [];
         for (let i = startPage; i <= endPage; i++) {
             pages.push(
@@ -136,6 +152,7 @@ function PostList() {
         return (
             <nav>
                 <ul className="pagination">
+                    {/* 이전 페이지 버튼 */}
                     <li className={`page-item ${!pageData.hasPrevious ? 'disabled' : ''}`}>
                         <a
                             className="page-link"
@@ -148,7 +165,9 @@ function PostList() {
                             &laquo;
                         </a>
                     </li>
+                    {/* 페이지 번호 버튼들 */}
                     {pages}
+                    {/* 다음 페이지 버튼 */}
                     <li className={`page-item ${!pageData.hasNext ? 'disabled' : ''}`}>
                         <a
                             className="page-link"
@@ -175,7 +194,7 @@ function PostList() {
             {/* 검색 영역 */}
             <div className="d-flex justify-content-end mb-3">
                 <div className="input-group" style={{ width: 'auto', maxWidth: '400px' }}>
-                    {/* 검색 타입 선택 */}
+                    {/* 검색 타입 선택 드롭다운 */}
                     <select
                         className="form-select"
                         value={searchType}
@@ -218,6 +237,7 @@ function PostList() {
                 </tr>
                 </thead>
                 <tbody>
+                    {/* 조건부 렌더링: 로딩/에러/데이터 없음/정상 */}
                     {loading ? (
                         <tr>
                             <td colSpan="4" className="text-center">로딩 중...</td>
@@ -231,6 +251,7 @@ function PostList() {
                             <td colSpan="4" className="text-center">게시물이 없습니다.</td>
                         </tr>
                     ) : (
+                        // 게시글 목록 렌더링
                         posts.map(post => (
                             <tr key={post.pstSn}>
                                 <td>{post.pstSn}</td>
@@ -255,7 +276,7 @@ function PostList() {
                 </button>
             </div>
 
-            {/* 페이징 */}
+            {/* 페이징 버튼 영역 */}
             <div className="d-flex justify-content-center">
                 {renderPagination()}
             </div>

@@ -1,4 +1,9 @@
-// src/components/layout/Header.jsx
+/**
+ * Header.jsx - 상단 네비게이션 바
+ * - 모든 페이지에 표시되는 메뉴
+ * - 로그인 상태에 따라 다른 UI를 보여줌
+ */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
@@ -6,6 +11,7 @@ import useAuth from '../../hooks/useAuth';
 function Header() {
     const { user, loading } = useAuth();
 
+    // [로그아웃 핸들러] 로그아웃 버튼 클릭 시 실행
     const handleLogout = async () => {
         try {
             const response = await fetch('/logout', {
@@ -20,7 +26,6 @@ function Header() {
             }
         } catch (error) {
             console.error('로그아웃 실패:', error);
-            // 실패해도 메인으로 이동
             window.location.href = '/';
         }
     };

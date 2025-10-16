@@ -120,7 +120,7 @@ public class BbsRestController {
         boolean deleted = bbsService.deletePost(id, currentUserId);
 
         // 게시글이 없거나 작성자가 다른 경우
-        if(!deleted) {
+        if (!deleted) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // HTTP 403 Forbidden
         }
 

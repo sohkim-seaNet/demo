@@ -1,4 +1,8 @@
-// src/pages/Login/index.jsx
+/**
+ * Login/index.jsx - 로그인 페이지
+ * - 사용자 인증을 처리하는 폼
+ */
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showAlert } from '../../components/common/AlertModal';
@@ -6,6 +10,7 @@ import { showAlert } from '../../components/common/AlertModal';
 function Login() {
     const navigate = useNavigate();
 
+    // [폼 제출 핸들러] 로그인 버튼 클릭 시 실행
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -22,6 +27,7 @@ function Login() {
             formData.append('username', username);
             formData.append('password', password);
 
+            // 서버에 로그인 요청 (Spring의 /login 매핑과 연결)
             const response = await fetch('/login', {
                 method: 'POST',
                 headers: {
@@ -34,11 +40,11 @@ function Login() {
             const data = await response.json();
 
             if (data.success) {
-                // 로그인 성공
+                // 로그인 성공 - 메인 페이지로 이동
                 navigate('/');
                 window.location.reload();  // 헤더 사용자 정보 갱신
             } else {
-                // 로그인 실패
+                // 로그인 실패 - 에러 메시지 표시
                 showAlert(data.message || '로그인에 실패했습니다.');
             }
         } catch (error) {
@@ -49,6 +55,7 @@ function Login() {
 
     return (
         <div className="container mt-4">
+            {/* 상단 게시판 이동 버튼 */}
             <div className="d-flex justify-content-end align-items-center mb-3">
                 <button
                     className="btn btn-outline-info btn-sm"
@@ -58,6 +65,7 @@ function Login() {
                 </button>
             </div>
 
+            {/* 로그인 폼 영역 */}
             <div className="row justify-content-center">
                 <div className="col-md-5">
                     <div className="card" style={{
@@ -69,6 +77,7 @@ function Login() {
                         </div>
                         <div className="card-body">
                             <form onSubmit={handleSubmit}>
+                                {/* 아이디 입력 */}
                                 <div className="mb-3">
                                     <label htmlFor="username" className="form-label">
                                         아이디
@@ -80,6 +89,7 @@ function Login() {
                                         name="username"
                                     />
                                 </div>
+                                {/* 비밀번호 입력 */}
                                 <div className="mb-3">
                                     <label htmlFor="password" className="form-label">
                                         비밀번호
@@ -91,6 +101,7 @@ function Login() {
                                         name="password"
                                     />
                                 </div>
+                                {/* 버튼 영역 */}
                                 <div className="d-grid gap-2">
                                     <button type="submit" className="btn btn-primary">
                                         로그인
