@@ -19,6 +19,9 @@ import PostWrite from './pages/PostWrite';
 import PostEdit from './pages/PostEdit';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Animation1 from './pages/Animation1';
+import Animation2 from './pages/Animation2';
+import Animation3 from './pages/Animation3';
 
 /**
  * Layout 컴포넌트
@@ -66,6 +69,10 @@ function App() {
                   <Route path="/board/edit/:id" element={<PostEdit />} />
                   <Route path="/user/login" element={<Login />} />
                   <Route path="/user/signup" element={<Signup />} />
+
+                  <Route path="/animation/1" element={<Animation1 />} />
+                  <Route path="/animation/2" element={<Animation2 />} />
+                  <Route path="/animation/3" element={<Animation3 />} />
               </Route>
           </Routes>
       </BrowserRouter>

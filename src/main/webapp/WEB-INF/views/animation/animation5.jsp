@@ -6,7 +6,6 @@
     <link href="/css/animation/animation5.css" rel="stylesheet" />
 </head>
 <body>
-    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
     <div class="container mt-5">
         <?xml version="1.0" encoding="UTF-8"?>
         <svg id="_레이어_2" data-name="레이어 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 297 717">

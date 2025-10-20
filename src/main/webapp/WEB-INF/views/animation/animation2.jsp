@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="/css/animation/animation2.css">
 </head>
 <body>
-    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
     <div class="container mt-5">
 
         <div class="controls">

@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="/css/animation/animation3.css">
 </head>
 <body>
-    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
     <div class="container mt-5">
 
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 625 625">

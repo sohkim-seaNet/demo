@@ -7,7 +7,7 @@
  * @param apiEndpoint - 게이지 설정 API URL
  * @param defaultConfig - API 호출 실패 시 사용할 기본 설정
  */
-async function loadGaugeConfig(apiEndpoint, defaultConfig) {
+export async function loadGaugeConfig(apiEndpoint, defaultConfig) {
     try {
         const response = await fetch(apiEndpoint);
         const data = await response.json();
@@ -30,7 +30,7 @@ async function loadGaugeConfig(apiEndpoint, defaultConfig) {
  * @param max - 최대값
  * @returns 범위 내로 제한된 값
  */
-function clampValue(value, min, max) {
+export function clampValue(value, min, max) {
     return Math.max(min, Math.min(max, value));
 }
 
@@ -40,7 +40,7 @@ function clampValue(value, min, max) {
  * @param gaugeConfig - 게이지 설정 객체
  * @returns 계산된 회전각도
  */
-function valueToAngle(value, gaugeConfig) {
+export function valueToAngle(value, gaugeConfig) {
     const { minValue, maxValue, minAngle, maxAngle } = gaugeConfig;
     const clampedValue = clampValue(value, minValue, maxValue);
 

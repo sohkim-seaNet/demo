@@ -1,0 +1,68 @@
+.cls-1 {
+    stroke: #dc4c1d;
+}
+
+.cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+    stroke-miterlimit: 10;
+}
+
+.cls-1, .cls-2, .cls-3, .cls-6, .cls-5 {
+    fill: none;
+}
+
+.cls-1, .cls-4 {
+    stroke-width: 5px;
+}
+
+.cls-2 {
+    stroke-width: 4px;
+}
+
+.cls-2, .cls-3, .cls-4, .cls-5 {
+    stroke: #ffc107;
+}
+
+.cls-3 {
+    stroke-width: 8px;
+}
+
+.cls-4 {
+    fill: #1d1f20;
+}
+
+.cls-7 {
+    fill: #ffc107;
+}
+
+.cls-8 {
+    fill: #595959;
+    font-family: MalgunGothic-Semilight, 'Malgun Gothic';
+    font-size: 30px;
+    font-weight: 300;
+}
+
+.cls-5 {
+    stroke-width: 2px;
+}
+
+/* 바늘(needle) 애니메이션 */
+#needle {
+    transition: transform 0.5s ease-in-out;
+}
+
+/* 입력 컨트롤 스타일 */
+.controls {
+    margin-bottom: 20px;
+}
+
+.controls input {
+    padding: 8px;
+    font-size: 16px;
+    width: 100px;
+}
+
+.controls button {
+    padding: 8px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
