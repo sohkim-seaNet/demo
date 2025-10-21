@@ -1,4 +1,3 @@
-// src/pages/Animation3/index.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { loadGaugeConfig, valueToAngle } from '../../utils/gaugeUtils';
@@ -60,12 +59,6 @@ function Animation3() {
 
     return (
         <div className="container mt-5">
-            <div className="d-flex justify-content-end mb-3">
-                <Link to="/board/list" className="btn btn-outline-info btn-sm">
-                    게시판으로
-                </Link>
-            </div>
-
             <GyroGauge
                 rotationAngle={getRotationAngle()}
                 displayAngle={gaugeConfig ? valueToAngle(currentValue, gaugeConfig).toFixed(2) : '0.00'}

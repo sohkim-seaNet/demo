@@ -22,6 +22,8 @@ import Signup from './pages/Signup';
 import Animation1 from './pages/Animation1';
 import Animation2 from './pages/Animation2';
 import Animation3 from './pages/Animation3';
+import Animation4 from './pages/Animation4';
+import Animation5 from './pages/Animation5';
 
 /**
  * Layout 컴포넌트
@@ -73,6 +75,8 @@ function App() {
                   <Route path="/animation/1" element={<Animation1 />} />
                   <Route path="/animation/2" element={<Animation2 />} />
                   <Route path="/animation/3" element={<Animation3 />} />
+                  <Route path="/animation/4" element={<Animation4 />} />
+                  <Route path="/animation/5" element={<Animation5 />} />
               </Route>
           </Routes>
       </BrowserRouter>

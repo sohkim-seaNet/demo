@@ -62,12 +62,6 @@ function Animation1() {
     
     return (
         <div className="container mt-5">
-            <div className="d-flex justify-content-end mb-3">
-                <Link to="/board/list" className="btn btn-outline-info btn-sm">
-                    게시판으로
-                </Link>
-            </div>
-
             <div className="gauge-container">
                 {/* 게이지 이미지 */}
                 <img
