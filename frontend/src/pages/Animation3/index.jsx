@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { loadGaugeConfig, valueToAngle } from '../../utils/gaugeUtils';
 import GyroGauge from '../../components/svg/GyroGauge';
 import './style.css';
+import GaugeInput from "../../components/common/GaugeInput.jsx";
 
 const DEFAULT_CONFIG = {
     minValue: 0,
@@ -27,7 +28,6 @@ function Animation3() {
             setCurrentValue(config.minValue); // 초기값 0
             console.log('[Gyro] 게이지 초기화 완료');
         };
-
         initGauge();
     }, []);
 
@@ -48,15 +48,6 @@ function Animation3() {
         setCurrentValue(value);
     };
 
-    /**
-     * Enter 키 입력
-     */
-    const handleKeyUp = (e) => {
-        if (e.key === 'Enter') {
-            handleSubmit();
-        }
-    };
-
     return (
         <div className="container mt-5">
             <GyroGauge
@@ -65,26 +56,13 @@ function Animation3() {
             />
 
             <div className="text-center mt-3">
-                <div className="input-group justify-content-center" style={{ maxWidth: '300px', margin: '0 auto' }}>
-                    <input
-                        type="number"
-                        id="angleInput"
-                        className="form-control"
-                        placeholder="각도 입력 (0-360)"
-                        min="0"
-                        max="360"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyUp={handleKeyUp}
-                    />
-                    <button
-                        id="rotateBtn"
-                        className="btn btn-primary"
-                        onClick={handleSubmit}
-                    >
-                        적용
-                    </button>
-                </div>
+                <GaugeInput
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onSubmit={handleSubmit}
+                    min={0}
+                    max={360}
+                />
             </div>
         </div>
     );

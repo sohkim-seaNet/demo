@@ -1,9 +1,8 @@
-// src/pages/Animation2/index.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { loadGaugeConfig, valueToAngle } from '../../utils/gaugeUtils';
 import ThrusterGauge from '../../components/svg/ThrusterGauge';
 import './style.css';
+import GaugeInput from "../../components/common/GaugeInput.jsx";
 
 // 설정 상수
 const DEFAULT_CONFIG = {
@@ -55,28 +54,16 @@ function Animation2() {
         setCurrentValue(value);
     };
 
-    /**
-     * Enter 키 입력
-     */
-    const handleKeyUp = (e) => {
-        if (e.key === 'Enter') {
-            handleSubmit();
-        }
-    };
-
     return (
         <div className="container mt-5">
             <div className="controls">
-                <input
-                    type="number"
-                    min="0"
-                    max="800"
-                    placeholder="0 ~ 800"
+                <GaugeInput
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    onKeyUp={handleKeyUp}
+                    onSubmit={handleSubmit}
+                    min={0}
+                    max={800}
                 />
-                <button onClick={handleSubmit}>적용</button>
             </div>
             <ThrusterGauge needleRef={needleRef} />
         </div>

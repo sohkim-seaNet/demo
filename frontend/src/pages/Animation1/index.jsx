@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { loadGaugeConfig, valueToAngle } from '../../utils/gaugeUtils';
 import './style.css';
+import GaugeInput from "../../components/common/GaugeInput.jsx";
 
 // 설정 상수
 const DEFAULT_CONFIG = {
@@ -50,15 +50,6 @@ function Animation1() {
         const value = parseFloat(angleInput) || 0;
         setCurrentAngle(value);
     };
-
-    /**
-     * Enter 키 입력
-     */
-    const handleKeyUp = (e) => {
-        if (e.key === 'Enter') {
-            handleSubmit();
-        }
-    };
     
     return (
         <div className="container mt-5">
@@ -81,14 +72,13 @@ function Animation1() {
 
             {/* 컨트롤러 UI */}
             <div className="controller">
-                <input
-                    type="number"
-                    placeholder="각도 입력 (예: -40 ~ 40)"
+                <GaugeInput
                     value={angleInput}
                     onChange={(e) => setAngleInput(e.target.value)}
-                    onKeyUp={handleKeyUp}
+                    onSubmit={handleSubmit}
+                    min={-40}
+                    max={40}
                 />
-                <button onClick={handleSubmit}>적용</button>
             </div>
         </div>
     );

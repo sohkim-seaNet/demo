@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { loadGaugeConfig, valueToAngle } from '../../utils/gaugeUtils';
 import WindIndicator from '../../components/svg/WindIndicator';
+import GaugeInput from "../../components/common/GaugeInput.jsx";
 
 // 설정 상수
 const DEFAULT_CONFIG = {
@@ -48,46 +49,22 @@ function Animation4() {
      */
     const handleSubmit = () => {
         const value = parseFloat(inputValue) || 0;
-        // 0-360 범위 제한
         const clampedValue = Math.max(0, Math.min(360, value));
         setCurrentValue(clampedValue);
-    };
-
-    /**
-     * Enter 키 입력
-     */
-    const handleKeyUp = (e) => {
-        if (e.key === 'Enter') {
-            handleSubmit();
-        }
     };
 
     return (
         <div className="container mt-5">
             <WindIndicator needleRef={needleRef} currentValue={currentValue} />
-
             <div className="row mt-3">
                 <div className="col-md-4 mx-auto">
-                    <div className="input-group">
-                        <input
-                            type="number"
-                            className="form-control"
-                            min="0"
-                            max="360"
-                            step="1"
-                            placeholder="0-360"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyUp={handleKeyUp}
-                        />
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={handleSubmit}
-                        >
-                            적용
-                        </button>
-                    </div>
+                    <GaugeInput
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onSubmit={handleSubmit}
+                        min={0}
+                        max={360}
+                    />
                 </div>
             </div>
         </div>
