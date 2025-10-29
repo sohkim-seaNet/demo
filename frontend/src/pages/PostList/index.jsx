@@ -4,7 +4,6 @@
  * - 페이징 처리
  */
 
-
 import React, { useState, useEffect } from 'react';
 import { showAlert } from '../../components/common/AlertModal';
 import { useNavigate } from 'react-router-dom';
@@ -159,7 +158,9 @@ function PostList() {
                             href="#"
                             onClick={(e) => {
                                 e.preventDefault();
-                                if(pageData.hasPrevious) goToPage(currentPage - 1);
+                                if(pageData.hasPrevious) {
+                                    goToPage(currentPage - 1);
+                                }
                             }}
                         >
                             &laquo;
@@ -174,7 +175,9 @@ function PostList() {
                             href="#"
                             onClick={(e) => {
                                 e.preventDefault();
-                                if(pageData.hasNext) goToPage(currentPage + 1);
+                                if(pageData.hasNext) {
+                                    goToPage(currentPage + 1);
+                                }
                             }}
                         >
                             &raquo;

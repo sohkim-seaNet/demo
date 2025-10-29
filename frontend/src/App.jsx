@@ -25,6 +25,8 @@ import Animation3 from './pages/Animation3';
 import Animation4 from './pages/Animation4';
 import Animation5 from './pages/Animation5';
 
+import NotFound from './pages/NotFound';
+
 /**
  * Layout 컴포넌트
  *
@@ -77,6 +79,8 @@ function App() {
                   <Route path="/animation/3" element={<Animation3 />} />
                   <Route path="/animation/4" element={<Animation4 />} />
                   <Route path="/animation/5" element={<Animation5 />} />
+
+                  <Route path="*" element={<NotFound />} /> {/* 모든 미매칭 URL 처리 */}
               </Route>
           </Routes>
       </BrowserRouter>
