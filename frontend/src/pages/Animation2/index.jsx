@@ -56,6 +56,7 @@ function Animation2() {
 
     return (
         <div className="container mt-5">
+            <ThrusterGauge needleRef={needleRef} />
             <div className="controls">
                 <GaugeInput
                     value={inputValue}
@@ -65,7 +66,6 @@ function Animation2() {
                     max={800}
                 />
             </div>
-            <ThrusterGauge needleRef={needleRef} />
         </div>
     );
 }
