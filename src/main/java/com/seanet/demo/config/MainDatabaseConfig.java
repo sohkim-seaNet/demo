@@ -2,31 +2,39 @@ package com.seanet.demo.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * Main 데이터베이스 JPA 설정
+ */
 @Configuration
 @Primary
-@MapperScan(
-        basePackages = "com.seanet.demo.mappers.main",
-        sqlSessionFactoryRef = "mainSqlSessionFactory",
-        sqlSessionTemplateRef = "mainSqlSessionTemplate"
+@EnableTransactionManagement
+@EnableJpaRepositories(
+        basePackages = "com.seanet.demo.repository.main",
+        entityManagerFactoryRef = "mainEntityManagerFactory",
+        transactionManagerRef = "mainTransactionManager"
 )
 public class MainDatabaseConfig {
 
     /**
      * main 데이터베이스용 HikariCP 설정 Bean
-     * application.properties의 'main.datasource.hikari' 설정을 가져옵니다.
+     * application.properties의 'main.datasource.hikari' 설정 가져옴
      */
     @Primary
     @Bean(name = "mainHikariConfig")
@@ -49,28 +57,44 @@ public class MainDatabaseConfig {
      * main 데이터베이스용 SqlSessionFactory Bean
      */
     @Primary
-    @Bean(name = "mainSqlSessionFactory")
-    public SqlSessionFactory mainSqlSessionFactory(@Qualifier("mainDataSource") DataSource mainDataSource,
-                                                   ApplicationContext applicationContext) throws Exception {
-        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-        factoryBean.setDataSource(mainDataSource);
-        factoryBean.setMapperLocations(applicationContext.getResources("classpath*:mappers/main/**/*.xml"));
+    @Bean(name = "mainEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean mainEntityManagerFactory(
+            EntityManagerFactoryBuilder builder,
+            @Qualifier("mainDataSource") DataSource mainDataSource) {
 
-        // Configuration 객체를 여기서 직접 생성하고 설정
-        org.apache.ibatis.session.Configuration config = new org.apache.ibatis.session.Configuration();
-        config.setMapUnderscoreToCamelCase(true); // 프로퍼티 설정을 코드로 직접 반영
-        factoryBean.setConfiguration(config);
+        Map<String, Object> properties = new HashMap<>();
 
-        return factoryBean.getObject();
+        // Hibernate 설정
+        properties.put("hibernate.hbm2ddl.auto", "none");  // validate, update, create, create-drop
+        properties.put("hibernate.dialect", "org.hibernate.dialect.SQLServer2012Dialect");
+        properties.put("hibernate.show_sql", "true");
+        properties.put("hibernate.format_sql", "true");
+        properties.put("hibernate.use_sql_comments", "true");
+
+        // 네이밍 전략 (컬럼명 매핑 방식)
+        properties.put("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
+
+        // 배치 처리 최적화
+        properties.put("hibernate.jdbc.batch_size", "20");
+        properties.put("hibernate.order_inserts", "true");
+        properties.put("hibernate.order_updates", "true");
+
+        return builder
+                .dataSource(mainDataSource)
+                .packages("com.seanet.demo.domain")  // Entity 패키지
+                .persistenceUnit("main")
+                .properties(properties)
+                .build();
     }
 
     /**
-     * main 데이터베이스용 SqlSessionTemplate Bean
+     * main 데이터베이스용 TransactionManager Bean
      */
     @Primary
-    @Bean(name = "mainSqlSessionTemplate")
-    public SqlSessionTemplate mainSqlSessionTemplate(@Qualifier("mainSqlSessionFactory") SqlSessionFactory mainSqlSessionFactory) {
-        return new SqlSessionTemplate(mainSqlSessionFactory);
+    @Bean(name = "mainTransactionManager")
+    public PlatformTransactionManager mainTransactionManager(
+            @Qualifier("mainEntityManagerFactory") EntityManagerFactory mainEntityManagerFactory) {
+        return new JpaTransactionManager(mainEntityManagerFactory);
     }
-
 }
