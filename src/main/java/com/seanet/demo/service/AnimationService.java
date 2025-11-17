@@ -1,6 +1,6 @@
 package com.seanet.demo.service;
 
-import com.seanet.demo.mappers.sub.DummyMapper;
+import com.seanet.demo.repository.sub.TelegraphRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Service;
 public class AnimationService {
 
     @Autowired
-    private final DummyMapper dummyMapper;
+    private final TelegraphRepository telegraphRepository;
+
     @Autowired
     private final SseService sseService;
     private Integer lastOrder = null; // (중복 전송 방지) 마지막으로 전송한 값을 저장하기 위한 변수
@@ -26,7 +27,7 @@ public class AnimationService {
     @Scheduled(fixedRate = 2000)
     public void checkAndBroadcastLatestOrder() {
         // 1) 가장 최근의 _order 값을 조회
-        Integer latestOrder = dummyMapper.findLatestTelegraphOrder();
+        Integer latestOrder = telegraphRepository.findLatestOrder();
 
         // 2) 조회된 값이 있고, 이전에 보냈던 값과 다를 경우에만 메시지를 전송
         if (latestOrder != null && !latestOrder.equals(lastOrder)) {

@@ -1,10 +1,15 @@
 package com.seanet.demo.service;
 
+import com.seanet.demo.domain.main.Bbs;
 import com.seanet.demo.domain.BbsPageDTO;
-import com.seanet.demo.domain.BbsVO;
-import com.seanet.demo.domain.UserVO;
-import com.seanet.demo.mappers.main.BbsMapper;
+import com.seanet.demo.domain.main.User;
+import com.seanet.demo.repository.main.BbsRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,40 +20,45 @@ import java.util.List;
  */
 @Service(value = "bbsService")
 @RequiredArgsConstructor
+@Slf4j
 public class BbsService {
 
-    private final BbsMapper bbsMapper;
+    private final BbsRepository bbsRepository;
     private final UserService userService;
 
     /**
      * 게시물 저장 (게시글 작성)
-     * @param bbsVO 저장할 게시글 정보
+     * @param bbs 저장할 게시글 정보
      * @param userId 현재 로그인한 사용자 ID (SecurityContext에서 추출)
      * @return Long 생성된 게시글의 일련번호
      */
     @Transactional
-    public Long savePost(BbsVO bbsVO, String userId) {
-        // 1. 작성자 정보 설정
-        bbsVO.setUserId(userId);
+    public Long savePost(Bbs bbs, String userId) {
 
-        // 2. 사용자 닉네임을 작성자명으로 설정
-        UserVO user = userService.findByUserId(userId);
-        if (user != null) {
-            bbsVO.setPblrNm(user.getNickname());
+        // 1. 작성자 정보 조회
+        User user = userService.findByUserId(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
 
+        // 2. 작성자 정보 설정
+        bbs.setUser(user);  // User 엔티티 설정 (FK)
+        bbs.setPblrNm(user.getNickname());  // 작성자명 설정
+
         // 3. 데이터 저장
-        bbsMapper.save(bbsVO);
+        Bbs savedBbs = bbsRepository.save(bbs);
 
         // 4. 생성된 게시글 ID 반환
-        return bbsVO.getPstSn();
+        return savedBbs.getPstSn();
     }
+
     /**
      * 게시물 목록 조회
      * @return 전체 게시물 목록
      */
-    public List<BbsVO> findAllPost() {
-        return bbsMapper.findAll();
+    @Transactional(readOnly = true)
+    public List<Bbs> findAllPost() {
+        return bbsRepository.findAll(Sort.by(Sort.Direction.DESC, "pstSn"));
     }
 
     /**
@@ -56,58 +66,98 @@ public class BbsService {
      * @param pageDTO - 검색 및 페이징 조건
      * @return BbsPageDTO 조회 결과와 페이징을 통합한 응답 객체
      */
+    @Transactional(readOnly = true)
     public BbsPageDTO searchPostsWithPaging(BbsPageDTO pageDTO) {
+        // 1. Pageable 객체 생성 (페이지는 0부터 시작)
+        Pageable pageable = PageRequest.of(
+                pageDTO.getPage() - 1,  // JPA는 0부터 시작
+                pageDTO.getSize(),
+                Sort.by(Sort.Direction.DESC, "regDt")
+        );
 
-        // 1. OFFSET 값을 미리 계산해서 DTO에 설정
-        int offset = (pageDTO.getPage() - 1) * pageDTO.getSize();
-        pageDTO.setOffset(offset);
+        // 2. 검색 조건에 따라 적절한 Repository 메서드 호출
+        Page<Bbs> bbsPage;
+        String searchType = pageDTO.getSearchType();
+        String searchKeyword = pageDTO.getSearchKeyword();
 
-        // 2. 게시물 목록 조회
-        List<BbsVO> posts = bbsMapper.searchPostsWithPaging(pageDTO);
+        if (searchKeyword == null || searchKeyword.trim().isEmpty()) {
+            // 검색어 없음: 전체 조회
+            bbsPage = bbsRepository.findByDelYn("N", pageable);
+        } else {
+            // 검색어 있음: 검색 타입에 따라 분기
+            if ("title".equals(searchType)) {
+                // 제목 검색
+                bbsPage = bbsRepository.searchByTitle(searchKeyword, "N", pageable);
+            } else if ("titleContent".equals(searchType)) {
+                // 제목 + 내용 검색
+                bbsPage = bbsRepository.searchByTitleAndContent(searchKeyword, "N", pageable);
+            } else if ("writer".equals(searchType)) {
+                // 작성자 검색
+                bbsPage = bbsRepository.searchByWriter(searchKeyword, "N", pageable);
+            } else {
+                // 기본값: 제목 검색
+                bbsPage = bbsRepository.searchByTitle(searchKeyword, "N", pageable);
+            }
+        }
 
-        // 3. 전체 개수 조회
-        long totalCount = bbsMapper.countSearchPosts(pageDTO);
-
-        // 4. 페이징 정보 계산
-        int totalPages = totalCount > 0 ? (int) Math.ceil((double) totalCount / pageDTO.getSize()) : 0;
-        boolean hasNext = pageDTO.getPage() < totalPages;
-        boolean hasPrevious = pageDTO.getPage() > 1;
-
-        // 5. DTO에 결과 설정
-        pageDTO.setContent(posts);
-        pageDTO.setTotalElements(totalCount);
-        pageDTO.setTotalPages(totalPages);
-        pageDTO.setHasNext(hasNext);
-        pageDTO.setHasPrevious(hasPrevious);
+        // 3. Page 객체를 BbsPageDTO로 변환
+        pageDTO.setContent(bbsPage.getContent());
+        pageDTO.setTotalElements(bbsPage.getTotalElements());
+        pageDTO.setTotalPages(bbsPage.getTotalPages());
+        pageDTO.setHasNext(bbsPage.hasNext());
+        pageDTO.setHasPrevious(bbsPage.hasPrevious());
 
         return pageDTO;
     }
+
 
     /**
      * 게시물 상세정보 조회
      * @param pstSn - 게시물 일련번호
      * @return BbsVO 게시물 상세정보
      */
-    public BbsVO findPostById(Long pstSn) {
-        return bbsMapper.findBySn(pstSn);
+    @Transactional(readOnly = true)
+    public Bbs findPostById(Long pstSn) {
+        return bbsRepository.findByPstSnAndDelYn(pstSn, "N")
+                .orElse(null);
     }
 
     /**
      * 게시물 수정
      *
-     * @param bbsVO - 수정할 게시글 정보
+     * @param bbs - 수정할 게시글 정보
      * @param userId 현재 로그인한 사용자 ID (권한 검증용)
      * @return boolean [true: 수정 성공, false: 권한 없음 또는 게시글 없음]
      */
     @Transactional
-    public boolean updatePost(BbsVO bbsVO, String userId) {
-        // 권한 체크
-        if (!hasPermission(bbsVO.getPstSn(), userId)) {
+    public boolean updatePost(Bbs bbs, String userId) {
+        try {
+            // 1. 권한 체크
+            if (!hasPermission(bbs.getPstSn(), userId)) {
+                return false;
+            }
+
+            // 2. 기존 게시글 조회
+            Bbs existingBbs = bbsRepository.findByPstSnAndDelYn(bbs.getPstSn(), "N")
+                    .orElse(null);
+
+            if (existingBbs == null) {
+                return false;
+            }
+
+            // 3. 수정 가능한 필드만 업데이트
+            existingBbs.update(bbs.getPstTtl(), bbs.getPstCn());
+
+            // 4. JPA가 자동으로 UPDATE 쿼리 실행 (Dirty Checking)
+            bbsRepository.save(existingBbs);
+
+            return true;
+        } catch (Exception e) {
+            log.error("게시물 수정 실패: {}", e.getMessage());
             return false;
         }
-        int count = bbsMapper.update(bbsVO);
-        return count > 0;
     }
+
 
     /**
      * 게시물 삭제
@@ -116,15 +166,23 @@ public class BbsService {
      * @param userId 현재 로그인한 사용자 ID (권한 검증용)
      * @return boolean [true: 수정 성공, false: 권한 없음 또는 게시글 없음]
      */
+    @Transactional
     public boolean deletePost(Long pstSn, String userId) {
-        // 권한 체크
-        if (!hasPermission(pstSn, userId)) {
+        try {
+            // 1. 권한 체크
+            if (!hasPermission(pstSn, userId)) {
+                return false;
+            }
+
+            // 2. 소프트 삭제 실행
+            int count = bbsRepository.softDeleteByPstSn(pstSn);
+            return count > 0;
+        } catch (Exception e) {
+            log.error("게시물 삭제 실패: {}", e.getMessage());
             return false;
         }
-
-        int count = bbsMapper.deleteBySn(pstSn);
-        return count > 0;
     }
+
 
     /**
      * 게시물 수정/삭제 권한 확인
@@ -132,19 +190,23 @@ public class BbsService {
      * @param userId 현재 로그인한 사용자 ID
      * @return boolean [true: 권한 있음, false: 권한 없음 또는 게시글 없음]
      */
+    @Transactional(readOnly = true)
     public boolean hasPermission(Long pstSn, String userId) {
         // 1. 파라미터 유효성 검사
         if (pstSn == null || userId == null) {
             return false;
         }
+
         // 2. 게시글 존재 여부 확인
-        BbsVO post = bbsMapper.findBySn(pstSn);
+        Bbs post = bbsRepository.findByPstSnAndDelYn(pstSn, "N")
+                .orElse(null);
+
         if (post == null) {
             return false;
         }
 
         // 3. 작성자 본인 여부 확인
-        return userId.equals(post.getUserId());
+        return userId.equals(post.getUser().getUserId());
     }
 
 }

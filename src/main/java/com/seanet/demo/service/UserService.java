@@ -1,7 +1,7 @@
 package com.seanet.demo.service;
 
-import com.seanet.demo.domain.UserVO;
-import com.seanet.demo.mappers.main.UserMapper;
+import com.seanet.demo.domain.main.User;
+import com.seanet.demo.repository.main.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,19 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserService {
 
-    private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     /**
      * 회원가입
-     * @param userVO - 사용자 정보
+     * @param user - 사용자 정보
      * @return boolean [true: 회원가입 성공, false: 실패]
      */
     @Transactional
-    public boolean registerUser(UserVO userVO) {
+    public boolean registerUser(User user) {
         try {
-            userMapper.save(userVO);
+            userRepository.save(user);
             return true;
         } catch (Exception e) {
+            log.error("회원가입 실패: {}", e.getMessage());
             return false;
         }
     }
@@ -37,8 +38,9 @@ public class UserService {
      * @param userId - 사용자 ID (로그인 ID)
      * @return 사용자 정보
      */
-    public UserVO findByUserId(String userId) {
-        return userMapper.findByUserId(userId);
+    public User findByUserId(String userId) {
+        return userRepository.findByUserIdAndDelYn(userId, "N")
+                .orElse(null);
     }
 
     /**
@@ -47,7 +49,8 @@ public class UserService {
      * @return boolean [true: 이미 사용 중, false: 사용 가능]
      */
     public boolean isUserIdExists(String userId) {
-        return userMapper.countByUserId(userId) > 0;
+        return userRepository.existsByUserIdAndDelYn(userId, "N");
+
     }
 
     /**
@@ -56,22 +59,7 @@ public class UserService {
      * @return boolean [true: 이미 사용 중, false: 사용 가능]
      */
     public boolean isNicknameExists(String nickname) {
-        return userMapper.countByNickname(nickname) > 0;
-    }
-
-    /**
-     * 사용자 정보 수정
-     * @param userVO - 수정할 사용자 정보
-     * @return boolean [true: 수정 성공, false: 실패]
-     */
-    @Transactional
-    public boolean updateUser(UserVO userVO) {
-        try {
-            int result = userMapper.update(userVO);
-            return result > 0;
-        } catch (Exception e) {
-            return false;
-        }
+        return userRepository.existsByNicknameAndDelYn(nickname, "N");
     }
 
 
