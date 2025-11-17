@@ -1,8 +1,7 @@
 package com.seanet.demo.service;
 
-import com.seanet.demo.domain.UserVO;
+import com.seanet.demo.domain.main.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,7 +33,7 @@ public class AuthService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // 1. 데이터베이스에서 사용자 정보 조회
-        UserVO user = userService.findByUserId(username);
+        User user = userService.findByUserId(username);
 
         // 2. 사용자 존재 여부 확인
         if (user == null) {
@@ -42,7 +41,7 @@ public class AuthService implements UserDetailsService {
         }
 
         // 3. UserVO를 Spring Security UserDetails 객체로 변환
-        return User.builder()
+        return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserId())
                 .password(user.getUserPwd())
                 .authorities("ROLE_USER")   // 사용자 권한 설정 (현재는 모든 사용자가 ROLE_USER)

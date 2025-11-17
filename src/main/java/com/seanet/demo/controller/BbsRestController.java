@@ -1,7 +1,7 @@
 package com.seanet.demo.controller;
 
 import com.seanet.demo.domain.BbsPageDTO;
-import com.seanet.demo.domain.BbsVO;
+import com.seanet.demo.domain.main.Bbs;
 import com.seanet.demo.service.BbsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,7 @@ public class BbsRestController {
 
     // 게시물 작성
     @PostMapping("/")
-    public ResponseEntity<Void> savePost(@RequestBody BbsVO bbsVO){
+    public ResponseEntity<Void> savePost(@RequestBody Bbs bbsVO){
         String currentUserId = getCurrentUserId();
 
         if (currentUserId == null) {
@@ -53,8 +53,8 @@ public class BbsRestController {
 
     // 전체 게시물 목록 조회
     @GetMapping
-    public ResponseEntity<List<BbsVO>> getAllPosts() {
-        List<BbsVO> list = bbsService.findAllPost();
+    public ResponseEntity<List<Bbs>> getAllPosts() {
+        List<Bbs> list = bbsService.findAllPost();
         return ResponseEntity.ok(list); // HTTP 200 OK
     }
 
@@ -82,8 +82,8 @@ public class BbsRestController {
 
     // 게시물 상세 조회
     @GetMapping("/{id}")
-    public ResponseEntity<BbsVO> getPost(@PathVariable Long id) {
-        BbsVO post = bbsService.findPostById(id);
+    public ResponseEntity<Bbs> getPost(@PathVariable Long id) {
+        Bbs post = bbsService.findPostById(id);
         if(post == null) {
             return ResponseEntity.notFound().build();   // HTTP 404 Not Found
         }
@@ -92,7 +92,7 @@ public class BbsRestController {
 
     // 게시물 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody BbsVO bbsVO) {
+    public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody Bbs bbsVO) {
         String currentUserId = getCurrentUserId();
         if (currentUserId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // HTTP 401 Unauthorized

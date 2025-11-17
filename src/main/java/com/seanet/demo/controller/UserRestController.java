@@ -1,6 +1,6 @@
 package com.seanet.demo.controller;
 
-import com.seanet.demo.domain.UserVO;
+import com.seanet.demo.domain.main.User;
 import com.seanet.demo.service.AuthService;
 import com.seanet.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class UserRestController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody UserVO userVO) {
+    public ResponseEntity<?> registerUser(@RequestBody User userVO) {
         try {
             // 1. AuthService에서 비밀번호 암호화
             String encodedPassword = authService.encodePassword(userVO.getUserPwd());

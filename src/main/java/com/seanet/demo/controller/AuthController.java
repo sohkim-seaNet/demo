@@ -1,6 +1,6 @@
 package com.seanet.demo.controller;
 
-import com.seanet.demo.domain.UserVO;
+import com.seanet.demo.domain.main.User;
 import com.seanet.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,7 @@ public class AuthController {
         // 로그인한 사용자인 경우
         if (currentUserId != null) {
             response.put("userId", currentUserId);
-            UserVO user = userService.findByUserId(currentUserId);
+            User user = userService.findByUserId(currentUserId);
             response.put("nickname", user.getNickname());
         }
         return ResponseEntity.ok(response); // HTTP 200 OK

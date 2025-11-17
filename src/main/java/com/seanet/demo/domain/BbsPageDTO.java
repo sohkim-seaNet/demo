@@ -1,5 +1,6 @@
 package com.seanet.demo.domain;
 
+import com.seanet.demo.domain.main.Bbs;
 import lombok.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class BbsPageDTO {
     private int offset;                 // 데이터베이스 OFFSET 값
 
     // ===== 조회 결과 데이터 관련 필드 =====
-    private List<BbsVO> content;        // 게시글 목록
+    private List<Bbs> content;        // 게시글 목록
     private long totalElements;         // 전체 게시글 수
     private int totalPages;             // 전체 페이지 수
     private boolean hasNext;            // 다음 페이지 존재 여부

@@ -1,0 +1,70 @@
+package com.seanet.demo.domain.main;
+
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 사용자(User) 엔티티
+ */
+@Entity
+@Table(name = "TBL_USER")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@DynamicUpdate  // 변경된 필드만 UPDATE 쿼리에 포함
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "USER_ID", length = 50, nullable = false, unique = true)
+    private String userId;              // 사용자ID
+
+    @Column(name = "USER_PWD", length = 256, nullable = false)
+    private String userPwd;             // 사용자비밀번호
+
+    @Column(name = "USER_NM", length = 100, nullable = false)
+    private String userNm;              // 사용자명
+
+    @Column(name = "NICKNAME", length = 50, nullable = false)
+    private String nickname;            // 닉네임
+
+    @CreationTimestamp
+    @Column(name = "REG_DT", nullable = false, updatable = false)
+    private LocalDateTime regDt;        // 등록일시
+
+    @Column(name = "DEL_YN", length = 1, nullable = false)
+    @Builder.Default
+    private String delYn = "N";         // 삭제여부
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Bbs> bbsList = new ArrayList<>();
+
+    // 비즈니스 메서드
+    public void delete() {
+        this.delYn = "Y";
+    }
+
+    public boolean isActive() {
+        return "N".equals(this.delYn);
+    }
+
+    // 양방향 관계 편의 메서드
+    public void addBbs(Bbs bbs) {
+        bbsList.add(bbs);
+        bbs.setUser(this);
+    }
+
+
+}

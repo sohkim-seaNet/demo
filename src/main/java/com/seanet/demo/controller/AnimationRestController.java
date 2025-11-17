@@ -1,6 +1,6 @@
 package com.seanet.demo.controller;
 
-import com.seanet.demo.domain.GaugeVO;
+import com.seanet.demo.domain.main.Gauge;
 import com.seanet.demo.service.GaugeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +27,14 @@ public class AnimationRestController {
      * @return 계기판 설정 정보
      */
     @GetMapping("/{gaugeId}")
-    public ResponseEntity<GaugeVO> getGaugeConfig(@PathVariable String gaugeId) {
-        GaugeVO gaugeConfig = gaugeService.getGaugeConfig(gaugeId);
+    public ResponseEntity<Gauge> getGaugeConfig(@PathVariable String gaugeId) {
+        Gauge gaugeConfig = gaugeService.getGaugeConfig(gaugeId);
 
         if (gaugeConfig != null) {
             return ResponseEntity.ok(gaugeConfig);  // HTTP 200 OK
         } else {
             // 기본값으로 응답
-            GaugeVO defaultConfig = GaugeVO.builder()
+            Gauge defaultConfig = Gauge.builder()
                     .gaugeId(gaugeId)
                     .gaugeNm("기본 계기판")
                     .minValue(new BigDecimal("0"))
