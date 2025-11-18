@@ -19,7 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@DynamicUpdate  // 변경된 필드만 UPDATE 쿼리에 포함
 public class User {
 
     @Id
@@ -47,10 +46,6 @@ public class User {
     @Builder.Default
     private String delYn = "N";         // 삭제여부
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Bbs> bbsList = new ArrayList<>();
-
     // 비즈니스 메서드
     public void delete() {
         this.delYn = "Y";
@@ -59,12 +54,4 @@ public class User {
     public boolean isActive() {
         return "N".equals(this.delYn);
     }
-
-    // 양방향 관계 편의 메서드
-    public void addBbs(Bbs bbs) {
-        bbsList.add(bbs);
-        bbs.setUser(this);
-    }
-
-
 }

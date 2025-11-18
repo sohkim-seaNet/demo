@@ -1,5 +1,6 @@
 package com.seanet.demo.domain.main;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = "user")
 public class Bbs {
 
     @Id
@@ -34,10 +36,15 @@ public class Bbs {
     @Column(name = "PBLR_NM", length = 50, nullable = false)
     private String pblrNm;              // 게시자명
 
+    @Column(name = "USER_ID", length = 50, nullable = false)
+    private String userId;
+
+    // 외래키: USER_ID_FK
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", nullable = false,
+    @JoinColumn(name = "USER_ID_FK", nullable = false,
             foreignKey = @ForeignKey(name = "FK_TBL_BBS_TBL_USER"))
-    private User user;                  // 작성자
+    @JsonIgnore
+    private User user;                  // 작성자 (TBL_USER.ID 참조)
 
     @CreationTimestamp
     @Column(name = "REG_DT", nullable = false, updatable = false)
