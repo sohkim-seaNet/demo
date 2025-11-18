@@ -2,12 +2,9 @@ package com.seanet.demo.domain.main;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 사용자(User) 엔티티
@@ -46,11 +43,19 @@ public class User {
     @Builder.Default
     private String delYn = "N";         // 삭제여부
 
-    // 비즈니스 메서드
+    // ===================== 비즈니스 메서드 ===================== //
+
+    /**
+     * 사용자 논리 삭제(Soft Delete)
+     */
     public void delete() {
         this.delYn = "Y";
     }
 
+    /**
+     * 활성 사용자 여부
+     * - delYn 이 'N'이면 활성, 'Y'면 삭제
+     */
     public boolean isActive() {
         return "N".equals(this.delYn);
     }

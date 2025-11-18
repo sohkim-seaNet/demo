@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 /**
  * 게시글(BBS) 엔티티
+ * - User 엔티티와 다대일(N:1) 관계 (@ManyToOne)
  */
 @Entity
 @Table(name = "TBL_BBS")
@@ -39,10 +40,10 @@ public class Bbs {
     @Column(name = "USER_ID", length = 50, nullable = false)
     private String userId;
 
-    // 외래키: USER_ID_FK
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID_FK", nullable = false,
             foreignKey = @ForeignKey(name = "FK_TBL_BBS_TBL_USER"))
+
     @JsonIgnore
     private User user;                  // 작성자 (TBL_USER.ID 참조)
 
@@ -58,15 +59,25 @@ public class Bbs {
     @Builder.Default
     private String delYn = "N";         // 삭제여부
 
-    // 비즈니스 메서드
+    // ===================== 비즈니스 메서드 ===================== //
+
+    /**
+     * 게시글 논리 삭제(Soft Delete) 메서드
+     */
     public void delete() {
         this.delYn = "Y";
     }
 
+    /**
+     * 삭제되지 않은 활성 게시글인지 여부 확인
+     */
     public boolean isActive() {
         return "N".equals(this.delYn);
     }
 
+    /**
+     * 게시글 수정
+     */
     public void update(String title, String content) {
         this.pstTtl = title;
         this.pstCn = content;

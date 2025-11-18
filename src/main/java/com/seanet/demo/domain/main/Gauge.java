@@ -46,19 +46,5 @@ public class Gauge {
     @Column(name = "REG_DT")
     private LocalDateTime regDt;        // 등록일시
 
-    // 비즈니스 메서드
-    public BigDecimal calculateAngle(BigDecimal value) {
-        // 값에 따른 각도 계산 로직
-        if (value == null) return minAngle;
-
-        BigDecimal range = maxValue.subtract(minValue);
-        BigDecimal angleRange = maxAngle.subtract(minAngle);
-        BigDecimal valueOffset = value.subtract(minValue);
-
-        return minAngle.add(
-                valueOffset.multiply(angleRange).divide(range, 2, BigDecimal.ROUND_HALF_UP)
-        );
-    }
-
 
 }
