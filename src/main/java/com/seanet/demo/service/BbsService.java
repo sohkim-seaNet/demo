@@ -43,6 +43,7 @@ public class BbsService {
 
         // 2. 작성자 정보 설정
         bbs.setUser(user);  // User 엔티티 설정 (FK)
+        bbs.setUserId(user.getUserId());
         bbs.setPblrNm(user.getNickname());  // 작성자명 설정
 
         // 3. 데이터 저장
